@@ -1,0 +1,288 @@
+*{
+    font-family:'Lato',sans-serif;
+}
+body{
+    background:#222;
+    color:#999;
+    padding:0;
+    margin:0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+.barras {
+    position: absolute;
+    top: 30%;
+    width: 560px;
+}
+.centro{
+    text-align:center;
+    margin-top: 3vh;
+}
+#circle{
+    background:#000;
+}
+.invertir {
+    filter: invert(1);
+}
+.invert {
+    background:#ddd;
+}
+.invert > * {
+    filter: invert(1);
+}
+.invert #circle{
+    background:#fff;
+}
+input[type=text]{
+    vertical-align:middle;
+    height:30px;
+    line-height:30px;
+    font-size:20px;
+    text-align: center;
+}
+button{
+    vertical-align:middle;
+    cursor:pointer;
+    height:40px;
+    line-height:30px;
+    font-size:20px;
+}
+#inversion{
+    width:30px;
+    text-align:center;
+}
+.inputLine,.inputLine1 {
+	width: 90%;
+	max-width: 480px;
+	text-align: center;
+    margin: 10px auto;
+}
+.inputLine input{
+	width: 70%;
+	max-width: 480px;
+	text-align: center;
+	margin: 0 auto;
+    background: #333;
+    border: 1px solid #000;
+    color: #aaa;
+    font-size: 1.3em;
+    border-top-left-radius: 0.7em;
+    border-bottom-left-radius: 0.7em;
+}
+.inputLine input[type=checkbox],.inputLine1 input[type=checkbox]{
+	display: inline-block;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 8px;
+    transform: scale(2);
+}
+.inputLine1 input{
+	width: 70%;
+	max-width: 480px;
+	text-align: center;
+	margin: 0 auto;
+    background: #fff;
+    border: 1px solid #000;
+    color: #000;
+    font-size: 1.6em;
+    border-top-left-radius: 0.7em;
+    border-bottom-left-radius: 0.7em;
+    font-weight: bold;
+}
+.invert .inputLine input{
+    background: #fff;
+    color: #666;
+}
+.invert {
+    filter: invert(1);
+}
+.toggle {
+    padding: 2px 5px;
+    width: 10%;
+    background: #000;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 0%;
+    border-top-left-radius: 0%;
+    border-bottom-left-radius: 0%;
+    height: 1.7em;
+    border-top-right-radius: 0.7em;
+    border-bottom-right-radius: 0.7em;
+}
+.toggle:hover {
+    background: #ddd;
+    color: #000;
+    box-shadow: inset 0px 0px 5px #000;
+}
+.toggle:active {
+    background: #eee;
+    color: #000;
+    box-shadow: none;	
+}
+.opciones {
+    margin: 20px auto;
+}
+.inputLine input.full{
+	width: 93%;
+}
+input[type=checkbox],label{
+	cursor: pointer;	
+}
+.footer {
+    width:300px;
+    text-align:center;
+    margin:0 auto;
+    padding:10px;
+    color:#555;
+    font-size: 12px;
+}
+.footer a {
+    color:#777;
+    text-decoration:none;
+}
+
+
+/* PLAY & STOP - MANECILLA DEL RELOJ */
+.playButton {
+    /* padding: 8px 20px; */
+    width: 40px;
+    background: #00AAFF;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    /* font-size: 1.1em; */
+    cursor: pointer;
+    /* margin: 10px 5px; */
+    transition: background 0.3s;
+}
+
+.playButton:hover {
+    background: #0088CC;
+}
+
+.playButton:active {
+    background: #006699;
+}
+
+input[type=range] {
+    width: 150px;
+    margin: 0 10px;
+    vertical-align: middle;
+}
+
+#tempoValue {
+    display: inline-block;
+    min-width: 80px;
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.invert #tempoValue {
+    color: #666;
+}
+
+.escalar {
+    font-size: 1.3em;
+    transform: scale(1.4);	
+}
+
+/* SQUARES VISUALIZATION */
+.square-container-container {
+    max-width: 60%;
+    width: min-content;
+    max-height: 60vh;
+    height: min-content;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 20px auto;
+    justify-content: center;
+}
+.square-container {
+    display: flex;
+    align-items: flex-end;
+    margin: 20px;
+}
+
+.clave-column {
+    display: flex;
+    flex-direction: column-reverse; /* Change back to column-reverse */
+    align-items: center;
+    margin: 0 1px;
+}
+
+.square {
+    width: 20px;
+    height: 20px;
+    border: 2px solid;
+    margin: 2px;
+    transition: all 0.2s ease;
+}
+
+.square.bottom-square {
+    background-color: #FF5733 !important; /* Orange-redish color */
+    border-color: #FF5733 !important;
+}
+
+.square.highlighted {
+    opacity: 1 !important;
+    border-color: #FFFFFF !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
+.column-number, .column-figure {
+    order: -1; /* This forces these elements to appear at the bottom */
+    margin-top: 6px;
+    color: #bbb;
+}
+.invert .column-number, .invert .column-figure {
+    color: #333;
+}
+
+.column-number {
+    font-size: 14px;
+}
+
+.column-figure {
+    margin: 0;
+    font-size: 32px;
+    line-height: 30px;
+}
+
+/* DETALLES DISEÑO */
+#tempoSlider {
+    width: 50%;
+}
+#tempoValue {
+    width: 20%;
+}
+
+/* Bottom square styling */
+.square.bottom-square {
+    background-color: #FF5733 !important; /* Orange-redish color */
+    border-color: #FF5733 !important;
+}
+
+/* When highlighted, maintain the special border */
+.square.bottom-square.highlighted {
+    border-color: #FFFFFF !important;
+    background-color: #FF7755 !important; /* Slightly lighter when highlighted */
+}
+
+
+
+@media (orientation: portrait) {
+    body{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+    .barras {
+        top: 10%;
+        width: 100%;
+    }
+    .square-container-container {
+        max-width: 80vw;
+    }
+}
