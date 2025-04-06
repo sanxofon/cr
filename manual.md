@@ -305,7 +305,7 @@ Ejercicio: **5.212 / 7.21112**
 
      5.212 / 7.21112 = 35.A41514A
 
-Nota que esta operación de **superposición** es más complicada que la **concatenación**, así que hemos creado un código JavaScript (mathjs-rythm.class.js) para ayudarnos a hacer estos cálculos rápido y fiablemente.
+Nota que esta operación de **superposición** es más complicada que la **concatenación**, así que hemos creado un código JavaScript (claves-ritmicas.class.js) para ayudarnos a hacer estos cálculos rápido y fiablemente.
 
 Puedes acceder a la **[Calculadora Rítmica](https://lengua.la/cr)** en línea en la dirección:
 

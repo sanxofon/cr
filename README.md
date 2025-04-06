@@ -1,4 +1,4 @@
-# MRythm - Biblioteca de Operaciones con Claves Rítmicas
+# CR - Biblioteca de Operaciones con Claves Rítmicas
 
 ![Versión](https://img.shields.io/badge/versión-1.0.0-blue)
 ![Licencia](https://img.shields.io/badge/licencia-GPL--3.0-green)
@@ -36,13 +36,13 @@ La biblioteca está basada en la teoría de claves rítmicas, donde cada patrón
 ### Opción 1: Incluir directamente en HTML
 
 ```html
-<script src="mathjs-rythm.class.js"></script>
+<script src="claves-ritmicas.class.js"></script>
 ```
 
 ### Opción 2: Importar como módulo ES6
 
 ```javascript
-import { mrythm } from './mathjs-rythm.class.js';
+import { mrythm } from './claves-ritmicas.class.js';
 ```
 
 ## 🎵 Teoría de Claves Rítmicas
