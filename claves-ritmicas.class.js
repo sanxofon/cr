@@ -153,7 +153,7 @@
 
 */
 // Clase principal que contiene métodos para operaciones matemáticas y rítmicas
-class mrythm {
+class cr {
   // BASE 62 -------------------------------------------------------------
   // Codifica un número entero a base62 usando caracteres alfanuméricos
   static base62encode(integer) {

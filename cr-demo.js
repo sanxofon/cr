@@ -475,7 +475,7 @@ if (canvas.getContext){
             return [];
         }
         
-        const full = mrythm.fullParse(clave,true,true);
+        const full = cr.fullParse(clave,true,true);
         if(verbose) console.log("full:",full);
         /* if(full.operation=='/') {
         if(!addClavesOperacion) {
@@ -494,11 +494,11 @@ if (canvas.getContext){
         const completas = [];
         for (let i = 0; i < r[1].length; i++) {
             const x = r[1][i].split('.');
-            completas.push(x[0]+'.'+mrythm.binary2clave(x[1]).join(''));
+            completas.push(x[0]+'.'+cr.binary2clave(x[1]).join(''));
             if(window.addClavesOperacion) {
                 cr.push([
                 parseInt(x[0]),
-                mrythm.binary2clave(x[1]),
+                cr.binary2clave(x[1]),
                 parseInt(x[0]) // ? What is this third entry for?
                 ]);
             }
@@ -506,7 +506,7 @@ if (canvas.getContext){
         
         const claveRes = r[0][0]+'.'+r[0][1].join('_');
         document.getElementById('claveExpand').value = claveRes;
-        document.getElementById('claveResult').value = mrythm.base62contract(claveRes);
+        document.getElementById('claveResult').value = cr.base62contract(claveRes);
         // Agregamos el resultado a la lista como clave nueva
         // cr.push([
         if(resonly || window.addClaveResultado || !window.addClavesOperacion) {
@@ -685,7 +685,7 @@ if (canvas.getContext){
         if (!clave || !clave.length) return;
         
         // For superposition (/) or mixed operations, only show result
-        if (clave.length > 1 && mrythm.fullParse(document.getElementById('clave').value).operation !== '+') {
+        if (clave.length > 1 && cr.fullParse(document.getElementById('clave').value).operation !== '+') {
             clave = [clave[0]];
         }
         

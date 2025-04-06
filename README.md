@@ -27,7 +27,7 @@ Una potente biblioteca JavaScript para operaciones matemáticas con claves rítm
 
 ## 📝 Descripción
 
-MRythm es una biblioteca JavaScript que implementa operaciones matemáticas para manipular claves rítmicas. Permite realizar operaciones como concatenación (+), superposición (/) y multiplicación (*) de patrones rítmicos, así como análisis de simetría y generación de variaciones culturales.
+**CR** (*claves-ritmicas.class.js*) es una biblioteca JavaScript que implementa operaciones matemáticas para manipular claves rítmicas. Permite realizar operaciones como concatenación (+), superposición (/) y multiplicación (*) de patrones rítmicos, así como análisis de simetría y generación de variaciones culturales.
 
 La biblioteca está basada en la teoría de claves rítmicas, donde cada patrón se representa mediante una notación numérica que indica la duración entre golpes sucesivos.
 
@@ -42,7 +42,7 @@ La biblioteca está basada en la teoría de claves rítmicas, donde cada patrón
 ### Opción 2: Importar como módulo ES6
 
 ```javascript
-import { mrythm } from './claves-ritmicas.class.js';
+import { cr } from './claves-ritmicas.class.js';
 ```
 
 ## 🎵 Teoría de Claves Rítmicas
@@ -124,15 +124,15 @@ Los paréntesis se utilizan para agrupar operaciones y cambiar el orden de evalu
 // Concatenación de claves (A + B)
 const claveA = "7.2";  // 7.2221 expandido
 const claveB = "5.2";  // 5.221 expandido
-const resultado = mrythm.operar(claveA, claveB, '+');
+const resultado = cr.operar(claveA, claveB, '+');
 console.log(resultado);  // "12.2221221"
 
 // Superposición de claves (A / B)
-const superposicion = mrythm.operar(claveA, claveB, '/');
+const superposicion = cr.operar(claveA, claveB, '/');
 console.log(superposicion);  // "35.A46825"
 
 // Multiplicación de claves (A * B)
-const multiplicacion = mrythm.operar(claveA, "3", '*');
+const multiplicacion = cr.operar(claveA, "3", '*');
 console.log(multiplicacion);  // "21.222122212221"
 ```
 
@@ -140,15 +140,15 @@ console.log(multiplicacion);  // "21.222122212221"
 
 ```javascript
 // Convertir clave a representación binaria
-const binario = mrythm.clave2binary("5.221");
+const binario = cr.clave2binary("5.221");
 console.log(binario);  // "5.10101"
 
 // Convertir representación binaria a clave
-const clave = mrythm.binary2clave("10101");
+const clave = cr.binary2clave("10101");
 console.log(clave);  // [2, 2, 1]
 
 // Completar una clave abreviada
-const completa = mrythm.completarClave("7.2");
+const completa = cr.completarClave("7.2");
 console.log(completa);  // "7.2221"
 ```
 
@@ -158,7 +158,7 @@ console.log(completa);  // "7.2221"
 
 ```javascript
 const expresion = "(5.2 + 7.3) / (7.2 + 5.3)";
-const resultado = mrythm.fullParse(expresion);
+const resultado = cr.fullParse(expresion);
 console.log(resultado.result);  // "12.221111211"
 console.log(resultado.binaryResult);  // Representación binaria
 ```
@@ -168,7 +168,7 @@ console.log(resultado.binaryResult);  // Representación binaria
 ```javascript
 // Generar una variación de clave afrocubana
 const basePattern = "8.22";
-const variacion = mrythm.generateCulturalVariation(basePattern, 'afroCuban');
+const variacion = cr.generateCulturalVariation(basePattern, 'afroCuban');
 console.log(variacion);
 ```
 
@@ -176,7 +176,7 @@ console.log(variacion);
 
 ```javascript
 // Crear un patrón modular aritmético
-const patron = mrythm.createModularPattern(2, 5, 'arithmetic', { step: 1 });
+const patron = cr.createModularPattern(2, 5, 'arithmetic', { step: 1 });
 console.log(patron);
 ```
 
