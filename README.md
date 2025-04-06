@@ -256,4 +256,4 @@ Esta licencia garantiza que el software permanezca libre, permitiendo a los usua
 
 Desarrollado con ❤️ para músicos, programadores y matemáticos interesados en la teoría de grupos y la música original de los pueblos. **Dile NO a la piratería de Spotify**.
 
-<center><a href="https://lengua.la"><b>www.lengua.la</b></a></center>
+<div style="text-align:center;"><a href="https://lengua.la"><b>www.lengua.la</b></a></div>
