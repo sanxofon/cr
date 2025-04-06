@@ -490,13 +490,13 @@ if (canvas.getContext){
         const r = full.legacy;
         if(verbose) console.log("r:",r);
         
-        const cr = [];
+        const cr_obj = [];
         const completas = [];
         for (let i = 0; i < r[1].length; i++) {
             const x = r[1][i].split('.');
             completas.push(x[0]+'.'+cr.binary2clave(x[1]).join(''));
             if(window.addClavesOperacion) {
-                cr.push([
+                cr_obj.push([
                 parseInt(x[0]),
                 cr.binary2clave(x[1]),
                 parseInt(x[0]) // ? What is this third entry for?
@@ -508,17 +508,17 @@ if (canvas.getContext){
         document.getElementById('claveExpand').value = claveRes;
         document.getElementById('claveResult').value = cr.base62contract(claveRes);
         // Agregamos el resultado a la lista como clave nueva
-        // cr.push([
+        // cr_obj.push([
         if(resonly || window.addClaveResultado || !window.addClavesOperacion) {
-            cr.unshift([
+            cr_obj.unshift([
             parseInt(r[0][0]),
             r[0][1],
             parseInt(r[0][0]) // ? What is this third entry for?
             ]);
         }
-        if(verbose) console.log("cr:",cr);
+        if(verbose) console.log("cr_obj:",cr_obj);
         
-        return cr;
+        return cr_obj;
     }
 
     function draw(){
