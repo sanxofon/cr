@@ -19,6 +19,12 @@ body{
     text-align:center;
     margin-top: 3vh;
 }
+.titulo {
+    font-size: 2em;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-variant: small-caps;
+}
 #circle{
     background:#000;
 }
@@ -53,16 +59,16 @@ button{
     text-align:center;
 }
 .inputLine,.inputLine1 {
-	width: 90%;
-	max-width: 480px;
-	text-align: center;
+    width: 90%;
+    max-width: 480px;
+    text-align: center;
     margin: 10px auto;
 }
 .inputLine input{
-	width: 60%;
-	max-width: 480px;
-	text-align: center;
-	margin: 0 auto;
+    width: 60%;
+    max-width: 480px;
+    text-align: center;
+    margin: 0 auto;
     background: #333;
     border: 1px solid #000;
     color: #aaa;
@@ -71,17 +77,17 @@ button{
     border-bottom-left-radius: 0.7em; */
 }
 .inputLine input[type=checkbox],.inputLine1 input[type=checkbox]{
-	display: inline-block;
+    display: inline-block;
     width: auto;
     vertical-align: middle;
     margin-right: 8px;
     transform: scale(2);
 }
 .inputLine1 input{
-	width: 70%;
-	max-width: 480px;
-	text-align: center;
-	margin: 0 auto;
+    width: 70%;
+    max-width: 480px;
+    text-align: center;
+    margin: 0 auto;
     background: #fff;
     border: 1px solid #000;
     color: #000;
@@ -153,10 +159,10 @@ button{
     margin: 20px auto;
 }
 .inputLine input.full{
-	width: 93%;
+    width: 93%;
 }
 input[type=checkbox],label{
-	cursor: pointer;	
+    cursor: pointer;	
 }
 .footer {
     width:300px;
