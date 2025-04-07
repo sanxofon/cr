@@ -43,11 +43,10 @@
 	<link rel="shortcut icon" href="https://sanxofon.github.io/cr/logo.png" type="image/png">
 	<link rel="icon" href="https://sanxofon.github.io/cr/logo.png" type="image/png">
 
-	<!-- <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display|Lato&display=swap" rel="stylesheet">  -->
-	<link href="style.css" rel="stylesheet">
-	<!-- Audio Howler.js library -->
-	<script src="howler.min.js" type="text/javascript"></script>
-	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script> -->
+	<!-- CSS -->
+	<link href="cr-style.css" rel="stylesheet">
+	<!-- Memoria Add On CSS -->
+	<link href="cr-memoria.css" rel="stylesheet">
 </head>
 <body>
 	<div class="centro">
@@ -58,18 +57,25 @@
 			<div class="inputLine1">
 				<input title="Ver Claves" class="escalar" type="checkbox" id="addClavesOperacion" name="addClavesOperacion" value="1" onchange="window.addClavesOperacion = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Ingrese Claves y Operaciones" type="text" id="clave" placeholder="CLAVES" onchange="go();"><button class="toggle" onclick="go();">✔</button></div>
 			<div class="inputLine">
-				<input title="Ver Resultado" class="escalar" type="checkbox" id="addClaveResultado" name="addClaveResultado" value="1" onchange="window.addClaveResultado = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Clave resultado" type="text" id="claveResult" placeholder="RESULTADO" readonly="readonly"><input title="Clave resultado expandida" type="text" id="claveExpand" value="" readonly="readonly" style="display:none;"><button onclick="toggleInputVisibility();" title="Toggle view" class="toggle">_</button>
+				<input title="Ver Resultado" class="escalar" type="checkbox" id="addClaveResultado" name="addClaveResultado" value="1" onchange="window.addClaveResultado = this.checked; saveCheckboxState(this.id, this.checked); go();"><button onclick="rotateClaveResult(-1);" title="Move Left" class="toggli">&lAarr;</button><button onclick="rotateClaveResult(1);" title="Move Right" class="toggln">&rAarr;</button><input title="Clave resultado" type="text" id="claveResult" placeholder="RESULTADO" readonly="readonly"><input title="Clave resultado expandida" type="text" id="claveExpand" value="" readonly="readonly" style="display:none;"><button onclick="toggleInputVisibility();" title="Toggle view" class="toggle">_</button>
 			</div>
 			<div class="inputLine">
 				<button id="playButton" class="playButton" onclick="togglePlay();">▶</button>
 				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="6" max="60" value="20" oninput="updateTempo()">
 				<span id="tempoValue">20 BPM</span>
 			</div>
-			<div class="opciones=">
+			<div class="opciones">
 				<input type="checkbox" id="addCircleMarks" name="addCircleMarks" value="1" onchange="window.addCircleMarks = this.checked; saveCheckboxState(this.id, this.checked); go();">
 				<label for="addCircleMarks">Ver Marcas</label>
 				<input type="checkbox" id="inptLightDark" name="inptLightDark" value="1" onchange="saveCheckboxState(this.id, this.checked); toggleLightDark()">
 				<label for="inptLightDark">Claroscuro</label>
+			</div>
+			<div class="botones-memoria">
+				<button onclick="saveClave();" title="Guardar Clave">💾</button>
+				<button onclick="openClaves();" title="Abrir Claves Guardadas">📂</button>
+				<button onclick="importClaves();" title="Importar archivo JSON de Claves">📥</button>
+				<button onclick="exportClaves();" title="Exportar archivo JSON de Claves">📦</button>
+				<button onclick="clearClaves();" title="Vaciar Memoria de Claves">🧻</button>
 			</div>
 		</div>
         <div class="square-container-container" id="squareblock"><div id="squareVisualization" class="square-container"></div></div>
@@ -82,16 +88,15 @@
 		// Ver detalles de cada operación en la consola
 		const verbose = false;
 	</script>
+	<!-- Audio Howler.js library -->
+	<script src="howler.min.js" type="text/javascript"></script>
+	<!-- Beats sounds in Base64 -->
 	<script src="beats.js" type="text/javascript"></script>
+	<!-- Main Rhythmic Claves Class -->
 	<script src="claves-ritmicas.class.js" type="text/javascript"></script>
+	<!-- This Demo JS -->
 	<script src="cr-demo.js" type="text/javascript"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			setTimeout(function() {
-				var squareblockDiv = document.getElementById("squareblock");
-				squareblockDiv.scrollTop = squareblockDiv.scrollHeight;
-			},1000);
-		});
-	</script>
+	<!-- Memoria Add On JS -->
+	<script src="cr-memoria.js" type="text/javascript"></script>
 </body>
 </html>

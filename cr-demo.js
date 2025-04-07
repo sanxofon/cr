@@ -54,6 +54,7 @@ function saveCheckboxState(id, checked) {
 // Load checkbox state from localStorage
 function loadCheckboxState(id) {
     const state = localStorage.getItem(id);
+    if (state === null) return true; // Return true if not found
     return state === 'true'; // Convert string to boolean
 }
 // -----------------------------------------------
@@ -704,7 +705,7 @@ if (canvas.getContext){
                 case 7: return '𝅗𝅥··';
                 case 8: return '𝅝';
                 case 9: return '𝅝¹';
-                default: return duration + '/8';
+                default: return duration;
             }
         }
         
@@ -767,6 +768,10 @@ if (canvas.getContext){
         if(imperceptible<max) {
             max=imperceptible;
         }
+        setTimeout(function() {
+            var squareblockDiv = document.getElementById("squareblock");
+            squareblockDiv.scrollTop = squareblockDiv.scrollHeight;
+        },200);
     }
 }
 
@@ -805,6 +810,69 @@ function toggleLightDark() {
     }
     go();
 }
+
+// Function to load a clave from URL parameter
+// El signo de + debe ser cambiado por: %2B
+function loadClaveFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const claveParam = urlParams.get('c');
+    
+    if (claveParam) {
+        document.getElementById('clave').value = claveParam;
+        saveClaveToLocalStorage(claveParam);
+        console.log('Clave cargada desde URL:', claveParam);
+    } else {
+        // Load last clave from localStorage
+        const savedClave = loadClaveFromLocalStorage();
+        document.getElementById('clave').value = savedClave;
+        console.log('Clave cargada desde localStorage:', savedClave);
+    }
+    setTimeout(function() {
+        go(); // Process the loaded clave with a slight delay
+    }, 200);
+}
+
+// --------------------------------------------------------------
+// Efectos de rotación, inversión, etc sobre la clave resultado
+// Function to rotate an array by any amount (positive or negative)
+function rotateArray(arr, rotateBy) {
+    if (!arr.length) return arr;
+    
+    // Create a copy of the array to avoid modifying the original
+    const result = [...arr];
+    
+    // Normalize rotation amount to be within array length
+    const len = arr.length;
+    const normalizedRotation = ((rotateBy % len) + len) % len;
+    
+    if (normalizedRotation === 0) return result; // No rotation needed
+    
+    // For positive rotation: remove last n elements and add to beginning
+    // For negative rotation: remove first n elements and add to end
+    // But since we normalized, we only need to handle the positive case
+    const elementsToRotate = result.splice(len - normalizedRotation, normalizedRotation);
+    return [...elementsToRotate, ...result];
+}
+function rotateClaveResult(rotationAmount) {
+    if (isNaN(rotationAmount)) {
+        alert("Error. Debe ingresar un numero.");
+        return;
+    }
+    console.log("rotateClaveResult", rotationAmount);
+    const claveExpand = document.getElementById('claveExpand');
+    const longitud = parseInt(claveExpand.value.split('.')[0]);
+    const clave = claveExpand.value.split('.')[1].split('_');
+    console.log("longitud:", longitud);
+    console.log("clave:", clave);
+    const rotatedClave = rotateArray(clave, rotationAmount);
+    console.log("rotatedClave:", rotatedClave);
+    claveExpand.value = longitud + '.' + rotatedClave.join('_');
+    document.getElementById('claveResult').value = cr.base62contract(claveExpand.value);
+    document.getElementById('clave').value = cr.base62contract(claveExpand.value);
+    go();
+}
+
+
 // Initialize when document is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Load checkbox states from localStorage
@@ -831,12 +899,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the canvas
     doResize();
     
-    // Load last clave from localStorage
-    const savedClave = loadClaveFromLocalStorage();
-    if (savedClave && savedClave.trim() !== '') {
-        document.getElementById('clave').value = savedClave;
-        setTimeout(function() {
-            go(); // Process the loaded clave with a slight delay
-        }, 200);
-    }
+    // Load from URL
+    loadClaveFromURL();
 });

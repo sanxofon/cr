@@ -59,7 +59,7 @@ button{
     margin: 10px auto;
 }
 .inputLine input{
-	width: 70%;
+	width: 60%;
 	max-width: 480px;
 	text-align: center;
 	margin: 0 auto;
@@ -67,8 +67,8 @@ button{
     border: 1px solid #000;
     color: #aaa;
     font-size: 1.3em;
-    border-top-left-radius: 0.7em;
-    border-bottom-left-radius: 0.7em;
+    /* border-top-left-radius: 0.7em;
+    border-bottom-left-radius: 0.7em; */
 }
 .inputLine input[type=checkbox],.inputLine1 input[type=checkbox]{
 	display: inline-block;
@@ -111,12 +111,40 @@ button{
     border-top-right-radius: 0.7em;
     border-bottom-right-radius: 0.7em;
 }
-.toggle:hover {
+.toggli {
+    padding: 2px 5px;
+    width: 5%;
+    background: #000;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 0%;
+    border-top-right-radius: 0%;
+    border-bottom-right-radius: 0%;
+    height: 1.7em;
+    border-top-left-radius: 0.7em;
+    border-bottom-left-radius: 0.7em;
+}
+.toggln {
+    padding: 2px 5px;
+    width: 5%;
+    background: #000;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 0%;
+    border-top-right-radius: 0%;
+    border-bottom-right-radius: 0%;
+    height: 1.7em;
+    border-top-left-radius: 0%;
+    border-bottom-left-radius: 0%;
+}
+.toggle:hover,.toggli:hover,.toggln:hover {
     background: #ddd;
     color: #000;
     box-shadow: inset 0px 0px 5px #000;
 }
-.toggle:active {
+.toggle:active,.toggli:active,.toggln:active {
     background: #eee;
     color: #000;
     box-shadow: none;	
@@ -190,9 +218,9 @@ input[type=range] {
 
 /* SQUARES VISUALIZATION */
 .square-container-container {
-    max-width: 60%;
+    max-width: 80%;
     width: min-content;
-    max-height: 60vh;
+    max-height: 45vh;
     height: min-content;
     overflow-x: auto;
     overflow-y: auto;
