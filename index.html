@@ -52,18 +52,22 @@
 	<div class="centro">
 		<canvas id="circle" width="360" height="360"></canvas>
 	</div>
-	<div class="centro">
+	<div class="centro colder">
 		<div class="titulo">Claves Rítmicas</div>
 		<div>
 			<div class="inputLine1">
-				<input title="Ver Claves" class="escalar" type="checkbox" id="addClavesOperacion" name="addClavesOperacion" value="1" onchange="window.addClavesOperacion = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Ingrese Claves y Operaciones" type="text" id="clave" placeholder="CLAVES" onchange="go();"><button class="toggle" onclick="go();">✔</button></div>
+				<input title="Ver Claves" class="escalar" type="checkbox" id="addClavesOperacion" name="addClavesOperacion" value="1" onchange="window.addClavesOperacion = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Ingrese Claves y Operaciones" type="text" id="clave" placeholder="CLAVES" oninput="go();"><button class="toggle" onclick="go();">✔</button></div>
 			<div class="inputLine">
 				<input title="Ver Resultado" class="escalar" type="checkbox" id="addClaveResultado" name="addClaveResultado" value="1" onchange="window.addClaveResultado = this.checked; saveCheckboxState(this.id, this.checked); go();"><button onclick="rotateClaveResult(-1);" title="Move Left" class="toggli">&lAarr;</button><button onclick="rotateClaveResult(1);" title="Move Right" class="toggln">&rAarr;</button><input title="Clave resultado" type="text" id="claveResult" placeholder="RESULTADO" readonly="readonly"><input title="Clave resultado expandida" type="text" id="claveExpand" value="" readonly="readonly" style="display:none;"><button onclick="toggleInputVisibility();" title="Toggle view" class="toggle">_</button>
 			</div>
 			<div class="inputLine">
 				<button id="playButton" class="playButton" onclick="togglePlay();">▶</button>
-				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="6" max="60" value="20" oninput="updateTempo()">
-				<span id="tempoValue">20 BPM</span>
+				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="1" max="1200" step="1" oninput="updateTempo()">
+				<span id="tempoValue"></span>
+				<select id="tempoType">
+					<option value="bpm">BPM</option>
+					<option value="cpm">CPM</option>
+				</select>
 			</div>
 			<div class="opciones">
 				<input type="checkbox" id="addCircleMarks" name="addCircleMarks" value="1" onchange="window.addCircleMarks = this.checked; saveCheckboxState(this.id, this.checked); go();">

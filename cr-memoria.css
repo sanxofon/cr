@@ -84,7 +84,7 @@ body.invert .botones-memoria {
 .botones-memoria button {
     background: none;
     border: none;
-    font-size: 2em;
+    font-size: 1.8em;
     filter: grayscale(1);
 }
 .botones-memoria button:hover {

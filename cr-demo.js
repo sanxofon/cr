@@ -23,8 +23,40 @@ let currentHighlightedSquare = null;
 let currentTempoUnit = 0; // Track current tempo unit
 let totalTempoUnits = 0; // Total tempo units in the clave
 
-// -----------------------------------------------
-// MEMORIA LOCALSTORAGE --------------------------
+let colores = [
+    '#00FFFF',
+    '#FF0000',
+    '#FFFF00',
+    '#00FF00',
+    '#FF7700',
+    '#0077FF',
+];
+
+var imperceptible = 1;
+var claveLength = 0;
+
+// GLOBALES PREFERENCIAS
+window.addClavesOperacion = true;
+window.addClaveResultado = true;
+window.addCircleMarks = true;
+
+// -------------------------------------------------
+// Variables for the rotating arrow
+var arrowAngle = -91; // Start at top (12 o'clock) with sound sync hack (90-1)
+var isPlaying = false;
+var animationId = null;
+var tempo = 120; // BPM
+var limiTempo = [1,1200]; // Limits tempo to this range
+var tempoCPM = false; // cpm = true or bpm = false
+var lastFrameTime = 0;
+var vertexPoints = []; // Will store all vertex points of all claves
+var soundsPlayed = {}; // To track which sounds have been played
+var currentHighlightedVertex = null; // track the currently highlighted vertex
+let tolerance = 3; // Increased tolerance for better detection
+let soundsPlayedFlagDelay = 200; // Delay before resetting the flag
+
+// -------------------------------------------------
+// MEMORIA LOCALSTORAGE ----------------------------
 // Save clave to localStorage when it changes
 function saveClaveToLocalStorage(clave) {
     try {
@@ -45,78 +77,56 @@ function loadClaveFromLocalStorage() {
         return '';
     }
 }
-
 // Save checkbox state to localStorage
 function saveCheckboxState(id, checked) {
     localStorage.setItem(id, checked);
 }
-
 // Load checkbox state from localStorage
 function loadCheckboxState(id) {
     const state = localStorage.getItem(id);
     if (state === null) return true; // Return true if not found
     return state === 'true'; // Convert string to boolean
 }
-// -----------------------------------------------
-
-function doResize() {
-    WW = window.innerWidth*0.9;
-    HH = window.innerHeight*0.85;
-    if(WW<360)WW=360;
-    if(HH<360)HH=360;
-    if(WW<HH)HH=WW-0;
-    else WW=HH-0;
-    canvas.width = WW;
-    canvas.height = HH;
-    XX = WW / 2;
-    YY = HH / 2;
-    RR = WW / 2.3;// Longitud del radio del círculo
-    CC = 2*Math.PI*RR;// Tau, longitud de la circunferencia
-    redraw();
-    // if(verbose) console.log(WW,XX,YY,RR,CC);
+    
+// Save all configurations to localStorage
+function saveConfigurationsToLocalStorage() {
+    try {
+        // Save checkbox states
+        const checkboxIds = ['addClavesOperacion', 'addClaveResultado', 'addCircleMarks', 'inptLightDark'];
+        checkboxIds.forEach(id => {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                saveCheckboxState(id, checkbox.checked);
+            }
+        });
+        
+        // Save tempo settings
+        localStorage.setItem('tempo', tempo);
+        localStorage.setItem('tempoCPM', tempoCPM);
+        
+        if (verbose) console.log('Saved all configurations to localStorage');
+    } catch (e) {
+        if (verbose) console.error('Error saving configurations to localStorage:', e);
+    }
 }
-window.onresize = function(event) {
-    doResize();
-};
-let colores = [
-    '#00FFFF',
-    '#FF0000',
-    '#FFFF00',
-    '#00FF00',
-    '#FF7700',
-    '#0077FF',
-];
-
-var imperceptible = 1;
-
-// GLOBALES PREFERENCIAS
-window.addClavesOperacion = true;
-window.addClaveResultado = true;
-window.addCircleMarks = true;
-
-// ---------------------------------------------------------------
-// Variables for the rotating arrow
-var arrowAngle = -91; // Start at top (12 o'clock) with sound sync hack (90-1)
-var isPlaying = false;
-var animationId = null;
-var tempo = 20; // BPM
-var lastFrameTime = 0;
-var vertexPoints = []; // Will store all vertex points of all claves
-var soundsPlayed = {}; // To track which sounds have been played
-var currentHighlightedVertex = null; // track the currently highlighted vertex
-let tolerance = 5; // Increased tolerance for better detection
-let soundsPlayedFlagDelay = 200; // Delay before resetting the flag
-// ---------------------------------------------------------------
-
+// -------------------------------------------------
 // // Convert a number range to another range, maintaining ratio
 // NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 function range2another(OldValue,OldMin,OldMax,NewMin,NewMax){
     return (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 }
+    
+// Function to limit values of tempo global var to limiTempo values
+function limitTempo(t) {
+    t = parseInt(t);
+    if (t < limiTempo[0]) return limiTempo[0];
+    if (t > limiTempo[1]) return limiTempo[1];
+    return t;
+}
 
 if (canvas.getContext){
-
-    // ---------------------------------------------------------------
+    
+    // -------------------------------------------------
     // Setup Howler sounds
     var sounds = {
         s1: new Howl({
@@ -150,12 +160,6 @@ if (canvas.getContext){
             preload: true,
         })
     };
-    
-    // Function to update the tempo
-    function updateTempo() {
-        tempo = parseInt(document.getElementById('tempoSlider').value);
-        document.getElementById('tempoValue').textContent = tempo + ' BPM';
-    }
     
     // Function to toggle play/pause
     function togglePlay() {
@@ -217,7 +221,7 @@ if (canvas.getContext){
         ctx.fillStyle = '#FF0000';
         ctx.fill();
     }
-
+    
     // Function to check if the arrow is passing a vertex
     function checkVertexCollision() {
         // Normalize arrow angle to 0-360 range
@@ -279,7 +283,7 @@ if (canvas.getContext){
         // Update square visualization based on current tempo unit
         updateSquareHighlights();
     }
-
+    
     // Function to update the current tempo unit based on the arrow angle
     function updateCurrentTempoUnit(arrowAngle) {
         // Get the clave to determine total tempo units
@@ -298,7 +302,7 @@ if (canvas.getContext){
         // Ensure it's within bounds
         currentTempoUnit = currentTempoUnit % totalTempoUnits;
     }
-
+    
     // Function to highlight a vertex when it's hit
     function highlightVertex(x, y, claveIndex) {
         const originalColor = colores[claveIndex % colores.length];
@@ -312,13 +316,13 @@ if (canvas.getContext){
         ctx.lineWidth = 2;
         ctx.stroke();
     }
-
+    
     // Animation function for the arrow
     function animateArrow(timestamp) {
         if (!isPlaying) {
             return;
         }
-
+        
         // Calculate time delta
         const deltaTime = timestamp ? timestamp - lastFrameTime : 16.67;
         lastFrameTime = timestamp || performance.now();
@@ -326,7 +330,9 @@ if (canvas.getContext){
         // Calculate angle increment based on tempo
         // 60000 ms / tempo = ms per beat
         // 360 degrees / ms per beat = degrees per ms
-        const degreesPerMs = (tempo / 60000) * 360;
+        const beatsPerSecond = tempo / 60;
+        const msPerBeat = 1000 / beatsPerSecond;
+        const degreesPerMs = 360 / (msPerBeat * claveLength); // XXX
         arrowAngle += degreesPerMs * deltaTime;
         
         // Keep angle normalized but preserve direction for animation
@@ -344,7 +350,7 @@ if (canvas.getContext){
         animationId = requestAnimationFrame(animateArrow);
     }
     
-
+    
     // Converts from degrees to radians.
     Math.radians = function(degrees) {
         return degrees * Math.PI / 180;
@@ -353,8 +359,8 @@ if (canvas.getContext){
     Math.degrees = function(radians) {
         return radians * 180 / Math.PI;
     };
-    // ---------------------------------------------------------------
-
+    // -------------------------------------------------
+    
     function redraw() {
         ctx.clearRect(0, 0, WW, HH);
         draw();
@@ -382,10 +388,9 @@ if (canvas.getContext){
     }
     function findPoint(a,d) { // a = angle
         const p = [
-        Math.round(Math.cos(a * Math.PI / 180) * d + XX),
-        Math.round(Math.sin(a * Math.PI / 180) * d + YY)
+            Math.round(Math.cos(a * Math.PI / 180) * d + XX),
+            Math.round(Math.sin(a * Math.PI / 180) * d + YY)
         ];
-        // if(verbose) console.log(p);
         return p;
     }
     // Texto: txt; center: x, y; Ángulo: a; Distancia: d
@@ -440,7 +445,7 @@ if (canvas.getContext){
     function q2a(q) {
         return q*360;
     }
-    function calcStep(s,w) { // Recives number of steps (semitonos)
+    function calcStep(s,w) { // Recibes number of steps (semitonos)
         return Math.pow(2,s/w);
     }
     function angleRadians2XY(ar,r=1) {
@@ -467,7 +472,7 @@ if (canvas.getContext){
         // 
         // drawLine(i,f,c='#FFFFFF',2);
     }
-
+    
     function leerClave(clave,resonly=false) {
         // Check if clave is empty and return empty array if so
         if (!clave || clave.trim() === '') {
@@ -498,9 +503,9 @@ if (canvas.getContext){
             completas.push(x[0]+'.'+cr.binary2clave(x[1]).join(''));
             if(window.addClavesOperacion) {
                 cr_obj.push([
-                parseInt(x[0]),
-                cr.binary2clave(x[1]),
-                parseInt(x[0]) // ? What is this third entry for?
+                    parseInt(x[0]),
+                    cr.binary2clave(x[1]),
+                    parseInt(x[0]) // ? What is this third entry for?
                 ]);
             }
         }
@@ -512,16 +517,16 @@ if (canvas.getContext){
         // cr_obj.push([
         if(resonly || window.addClaveResultado || !window.addClavesOperacion) {
             cr_obj.unshift([
-            parseInt(r[0][0]),
-            r[0][1],
-            parseInt(r[0][0]) // ? What is this third entry for?
+                parseInt(r[0][0]),
+                r[0][1],
+                parseInt(r[0][0]) // ? What is this third entry for?
             ]);
         }
         if(verbose) console.log("cr_obj:",cr_obj);
         
         return cr_obj;
     }
-
+    
     function draw(){
         // Dibujamos el centro
         drawCircle([XX, YY],2,4);
@@ -545,22 +550,22 @@ if (canvas.getContext){
             for (var j = 0; j < clave[c][0]; j++) {
                 if(j<1){
                     var p = drawMark(
-                    q2a(0),
-                    "1",
-                    0.3,
-                    2,
-                    colores[co],
+                        q2a(0),
+                        "1",
+                        0.3,
+                        2,
+                        colores[co],
                     );
                     poly.push(p);
                     // Store vertex point with clave index and angle
                     vertexPoints.push([p[0], p[1], co]);
                 } else {
                     var p = drawMark(
-                    q2a(j/clave[c][2]),
-                    (j+1)+"/"+clave[c][2],
-                    0.3,
-                    2,
-                    colores[co],
+                        q2a(j/clave[c][2]),
+                        (j+1)+"/"+clave[c][2],
+                        0.3,
+                        2,
+                        colores[co],
                     );
                 }
                 if(clave[c][1][k]==kk) {
@@ -579,7 +584,7 @@ if (canvas.getContext){
         if (isPlaying) {
             drawArrow(arrowAngle);
         }
-
+        
         // Draw highlight if there's a recently hit vertex
         if (currentHighlightedVertex && performance.now() - currentHighlightedVertex.time < 150) {
             const x = currentHighlightedVertex.x;
@@ -595,15 +600,15 @@ if (canvas.getContext){
             ctx.lineWidth = 3;
             ctx.stroke();
         }
-
+        
         // SQUARES VISUALIZATION -  Add at the end of the function:
         var claveres = leerClave(document.getElementById('clave').value, true);
         createSquareVisualization(claveres);
-
+        
         if(verbose) console.log("Vertex points:", vertexPoints.length);
-
+        
     }
-
+    
     // SQUARES VISUALIZATION - DRAW SQUARES VISUALIZATION
     // Function to update square highlights based on current tempo unit
     function updateSquareHighlights() {
@@ -676,7 +681,7 @@ if (canvas.getContext){
             }
         }
     }
-
+    
     // DRAW SQUARES VISUALIZATION
     function createSquareVisualization(clave, claveIndex) {
         if (verbose) console.log("createSquareVisualization", clave);
@@ -692,7 +697,7 @@ if (canvas.getContext){
         
         // Calculate total tempo units for the clave
         totalTempoUnits = clave[0][0];
-
+        
         // Function to get musical figure based on duration
         function getMusicalFigure(duration) {
             switch(duration) {
@@ -755,14 +760,51 @@ if (canvas.getContext){
         // Update highlights based on current tempo unit
         updateSquareHighlights();
     }
+    
+    // Function to update the tempo
+    function updateTempo(t=0) {
+        if(isNaN(claveLength) || claveLength<=0) return;
+        if (verbose) console.log("Paso 2", "Clave Length:", claveLength);
+        if(t<=0) {
+            tempo = limitTempo(document.getElementById('tempoSlider').value);
+        } else {
+            if(tempoCPM) {
+                tempo = limitTempo(t * claveLength);
+                if (verbose) console.log("Paso 3", "Tempo BPM:", tempo);
+            } else {
+                tempo = parseInt(t);
+            }
+            document.getElementById('tempoSlider').value =  tempo;
+            if (verbose) console.log("Paso 4", "tempoSlider:", document.getElementById('tempoSlider').value);
+        }
+        if(tempoCPM) {
+            document.getElementById('tempoType').value = 'cpm';
+            document.getElementById('tempoValue').textContent = (tempo/claveLength).toFixed(2);
+            if (verbose) console.log("Paso 5", "Tempo Value:", document.getElementById('tempoValue').textContent);
+        } else {
+            document.getElementById('tempoType').value = 'bpm';
+            document.getElementById('tempoValue').textContent = tempo;
+        }
+    }
 
+    // Main function to start redraw of the visualization
     function go() {
+        claveLength = parseInt(document.getElementById('claveResult').value.split('.')[0]);
         // Save current clave to localStorage before redrawing
         const claveValue = document.getElementById('clave').value;
         if (claveValue && claveValue.trim() !== '') {
             saveClaveToLocalStorage(claveValue);
+            // Save all configurations to localStorage
+            saveConfigurationsToLocalStorage();
+            // Si está seleccionado CPM cambiamos los BPM
+            if (tempoCPM) {
+                const t = parseFloat(document.getElementById('tempoValue').textContent);
+                if (verbose) console.log("Paso 1","Tempo CPM:", t);
+                // Se programa el `updateTempo` para dar tiempo al resultado de la clave
+                setTimeout("updateTempo("+t+");", 200);
+            }
         }
-        
+
         redraw();
         var max = 48;
         if(imperceptible<max) {
@@ -786,26 +828,27 @@ function toggleInputVisibility() {
         expandInpt.style.display = '';
     }
 }
+
 function toggleLightDark() {
     if(document.getElementById('inptLightDark').checked) {
         document.body.classList.add("invert");
         colores = [
-        '#00cccc',
-        '#cc0000',
-        '#cccc00',
-        '#00cc00',
-        '#cc5500',
-        '#0055cc',
+            '#00cccc',
+            '#cc0000',
+            '#cccc00',
+            '#00cc00',
+            '#cc5500',
+            '#0055cc',
         ];
     } else {
         document.body.classList.remove("invert");
         colores = [
-        '#00FFFF',
-        '#FF0000',
-        '#FFFF00',
-        '#00FF00',
-        '#FF7700',
-        '#0077FF',
+            '#00FFFF',
+            '#FF0000',
+            '#FFFF00',
+            '#00FF00',
+            '#FF7700',
+            '#0077FF',
         ];
     }
     go();
@@ -820,19 +863,19 @@ function loadClaveFromURL() {
     if (claveParam) {
         document.getElementById('clave').value = claveParam;
         saveClaveToLocalStorage(claveParam);
-        console.log('Clave cargada desde URL:', claveParam);
+        if (verbose) console.log('Clave cargada desde URL:', claveParam);
     } else {
         // Load last clave from localStorage
         const savedClave = loadClaveFromLocalStorage();
         document.getElementById('clave').value = savedClave;
-        console.log('Clave cargada desde localStorage:', savedClave);
+        if (verbose) console.log('Clave cargada desde localStorage:', savedClave);
     }
     setTimeout(function() {
         go(); // Process the loaded clave with a slight delay
     }, 200);
 }
 
-// --------------------------------------------------------------
+// -------------------------------------------------
 // Efectos de rotación, inversión, etc sobre la clave resultado
 // Function to rotate an array by any amount (positive or negative)
 function rotateArray(arr, rotateBy) {
@@ -853,25 +896,53 @@ function rotateArray(arr, rotateBy) {
     const elementsToRotate = result.splice(len - normalizedRotation, normalizedRotation);
     return [...elementsToRotate, ...result];
 }
+
 function rotateClaveResult(rotationAmount) {
     if (isNaN(rotationAmount)) {
         alert("Error. Debe ingresar un numero.");
         return;
     }
-    console.log("rotateClaveResult", rotationAmount);
+    if (verbose) console.log("rotateClaveResult", rotationAmount);
     const claveExpand = document.getElementById('claveExpand');
     const longitud = parseInt(claveExpand.value.split('.')[0]);
     const clave = claveExpand.value.split('.')[1].split('_');
-    console.log("longitud:", longitud);
-    console.log("clave:", clave);
+    if (verbose) console.log("longitud:", longitud);
+    if (verbose) console.log("clave:", clave);
     const rotatedClave = rotateArray(clave, rotationAmount);
-    console.log("rotatedClave:", rotatedClave);
+    if (verbose) console.log("rotatedClave:", rotatedClave);
     claveExpand.value = longitud + '.' + rotatedClave.join('_');
     document.getElementById('claveResult').value = cr.base62contract(claveExpand.value);
     document.getElementById('clave').value = cr.base62contract(claveExpand.value);
     go();
 }
 
+// -------------------------------------------------
+function doResize() {
+    WW = window.innerWidth*0.9;
+    HH = window.innerHeight*0.85;
+    if(WW<360)WW=360;
+    if(HH<360)HH=360;
+    if(WW<HH)HH=WW-0;
+    else WW=HH-0;
+    canvas.width = WW;
+    canvas.height = HH;
+    XX = WW / 2;
+    YY = HH / 2;
+    RR = WW / 2.3;// Longitud del radio del círculo
+    CC = 2*Math.PI*RR;// Tau, longitud de la circunferencia
+    redraw();
+    if(verbose) console.log("WW,XX,YY,RR,CC:",WW,XX,YY,RR,CC);
+}
+
+window.onresize = function(event) {
+    doResize();
+};
+
+// -------------------------------------------------
+document.getElementById('tempoType').addEventListener('change', function() {
+    tempoCPM = document.getElementById('tempoType').value == 'cpm' ? true : false;
+    updateTempo();
+});
 
 // Initialize when document is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -895,10 +966,30 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('inptLightDark').checked) {
         toggleLightDark();
     }
+
+    // Load tempo settings from localStorage
+    const savedTempo = localStorage.getItem('tempo');
+    if (savedTempo !== null) {
+        tempo = parseInt(savedTempo);
+        document.getElementById('tempoSlider').value = tempo;
+    }
     
+    const savedTempoCPM = localStorage.getItem('tempoCPM');
+    if (savedTempoCPM !== null) {
+        tempoCPM = savedTempoCPM === 'true';
+        document.getElementById('tempoType').value = tempoCPM ? 'cpm' : 'bpm';
+    }
+
     // Initialize the canvas
     doResize();
     
     // Load from URL
     loadClaveFromURL();
+    const c = parseInt(document.getElementById('clave').value.split('.')[0]);
+    // Define tempoValue desde la clave
+    document.getElementById('tempoValue').textContent = tempoCPM ? (tempo/c).toFixed(2):tempo;
+    // Actualiza el tempo
+    updateTempo();
+
+    go();
 });

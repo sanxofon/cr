@@ -19,6 +19,10 @@ body{
     text-align:center;
     margin-top: 3vh;
 }
+.colder {
+    max-width: 100%;
+    min-width: 50%;
+}
 .titulo {
     font-size: 2em;
     font-family: sans-serif;
@@ -206,17 +210,6 @@ input[type=range] {
     vertical-align: middle;
 }
 
-#tempoValue {
-    display: inline-block;
-    min-width: 80px;
-    font-size: 0.9em;
-    color: #aaa;
-}
-
-.invert #tempoValue {
-    color: #666;
-}
-
 .escalar {
     font-size: 1.3em;
     transform: scale(1.4);	
@@ -285,12 +278,27 @@ input[type=range] {
     line-height: 30px;
 }
 
-/* DETALLES DISEÑO */
+/* Tempo setting elements */
 #tempoSlider {
-    width: 50%;
+    width: 40%;
+    margin: 0;
 }
+
 #tempoValue {
-    width: 20%;
+    display: inline-block;
+    min-width: 40px;
+    font-size: 0.9em;
+    color: #aaa;
+}
+.invert #tempoValue {
+    color: #666;
+}
+#tempoType {
+    border: none;
+    background: none;
+    color: #999;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 /* Bottom square styling */

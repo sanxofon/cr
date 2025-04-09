@@ -22,6 +22,56 @@ function loadClaveFromLocalStorage() {
     }
 }
 
+// Function to download the current clave visualization as PNG
+function downloadClaveAsPNG(claveValue) {
+    // Get the visualization canvas
+    const canvas = document.getElementById('circle');
+    if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+    }
+    
+    // Create a safe filename from the clave value
+    const safeFilename = createSafeFilename(claveValue);
+    
+    // Convert canvas to data URL
+    try {
+        const dataURL = canvas.toDataURL('image/png');
+        
+        // Create download link
+        const downloadLink = document.createElement('a');
+        downloadLink.href = dataURL;
+        downloadLink.download = `clave_${safeFilename}.png`;
+        
+        // Append to body, click, and remove
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        console.log('Imagen de clave descargada como PNG');
+    } catch (e) {
+        console.error('Error al descargar la imagen:', e);
+    }
+}
+
+// Function to create a safe filename for Windows
+function createSafeFilename(input) {
+    if (!input) return 'unnamed';
+    
+    // Replace invalid Windows filename characters: \ / : * ? " < > |
+    let safeString = input.replace(/[\\/:*?"<>|]/g, '_');
+    
+    // Replace spaces with underscores
+    safeString = safeString.replace(/\s+/g, '_');
+    
+    // Limit length to avoid issues with long filenames
+    if (safeString.length > 50) {
+        safeString = safeString.substring(0, 50);
+    }
+    
+    return safeString;
+}
+
 // Save clave to localStorage array of saved claves
 function saveClave() {
     const claveValue = document.getElementById('clave').value;
@@ -32,23 +82,9 @@ function saveClave() {
         return;
     }
     
-    // Prompt for a title
-    const title = prompt('Ingrese un título para esta clave:', '');
-    
-    // If user cancels the prompt, abort saving
-    if (title === null) return;
-    
     try {
         // Get existing saved claves or initialize empty array
         let savedClaves = JSON.parse(localStorage.getItem('savedClaves') || '[]');
-        
-        // Create clave object with title, clave value, result and date
-        const claveObj = {
-            title: title || 'Sin título', // Default if empty
-            clave: claveValue,
-            result: claveResult,
-            date: new Date().toISOString()
-        };
         
         // Check if clave already exists to avoid duplicates
         const exists = savedClaves.some(c => 
@@ -56,6 +92,18 @@ function saveClave() {
         );
         
         if (!exists) {
+            // Prompt for a title
+            const title = prompt('Ingrese un título para esta clave:', '');
+            // If user cancels the prompt, abort saving
+            if (title === null) return;
+
+            // Create clave object with title, clave value, result and date
+            const claveObj = {
+                title: title || 'Sin título', // Default if empty
+                clave: claveValue,
+                result: claveResult,
+                date: new Date().toISOString()
+            };
             // Handle transition from old format (string) to new format (object)
             savedClaves = savedClaves.map(c => 
                 typeof c === 'string' ? { title: 'Sin título', clave: c, date: new Date().toISOString() } : c
@@ -65,8 +113,12 @@ function saveClave() {
             localStorage.setItem('savedClaves', JSON.stringify(savedClaves));
             console.log('Clave guardada correctamente');
         } else {
-            alert('Esta clave ya está guardada');
+            console.log('Esta clave ya está guardada',exists);
         }
+            
+        // Download the visualization as PNG
+        downloadClaveAsPNG(claveValue);
+
     } catch (e) {
         console.error('Error guardando clave en array:', e);
         alert('Error al guardar la clave');
