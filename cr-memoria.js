@@ -48,7 +48,7 @@ function downloadClaveAsPNG(claveValue) {
         downloadLink.click();
         document.body.removeChild(downloadLink);
         
-        console.log('Imagen de clave descargada como PNG');
+        if (verbose) console.log('Imagen de clave descargada como PNG');
     } catch (e) {
         console.error('Error al descargar la imagen:', e);
     }
@@ -111,7 +111,7 @@ function saveClave() {
             
             savedClaves.push(claveObj);
             localStorage.setItem('savedClaves', JSON.stringify(savedClaves));
-            console.log('Clave guardada correctamente');
+            if (verbose) console.log('Clave guardada correctamente');
         } else {
             console.log('Esta clave ya está guardada',exists);
         }
