@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Search Engine -->
 	<meta name="description" content="Una clave rítmica es una pequeña frase o motivo rítmico mínimo que solo toma en cuenta la secuencia de golpes y no las alturas o los timbres. Se representa mediante una secuencia de números donde cada número indica la duración entre golpes sucesivos.">
-	<meta name="image" content="https://lengua.la/cr/share.jpg">
+	<meta name="image" content="https://sanxofon.github.io/cr/share.jpg">
 	<meta name="author" content="Santiago Chávez Novaro">
 	<meta name="robots" content="index, follow">
 	<link rel="manifest" href="/cr/manifest.webmanifest">
@@ -17,12 +17,12 @@
 	<meta name="application-name" content="Claves Rítmicas">
 	<meta name="apple-mobile-web-app-title" content="Claves Rítmicas">
 	<meta name="apple-mobile-web-app-status-bar-style" content="white">
-	<link rel="apple-touch-icon" href="https://lengua.la/cr/logo.png">
+	<link rel="apple-touch-icon" href="https://sanxofon.github.io/cr/logo.png">
 	<!-- Open Graph general (Facebook, Pinterest & Google+) -->
 	<meta name="og:title" content="Claves Rítmicas v2">
 	<meta name="og:description" content="Una clave rítmica es una pequeña frase o motivo rítmico mínimo que solo toma en cuenta la secuencia de golpes y no las alturas o los timbres. Se representa mediante una secuencia de números donde cada número indica la duración entre golpes sucesivos.">
-	<meta name="og:image" content="https://lengua.la/cr/share.jpg">
-	<meta name="og:url" content="https://lengua.la/cr/">
+	<meta name="og:image" content="https://sanxofon.github.io/cr/share.jpg">
+	<meta name="og:url" content="https://sanxofon.github.io/cr/">
 	<meta name="og:site_name" content="Claves Rítmicas">
 	<meta name="og:locale" content="es_MX">
 	<meta name="og:type" content="app">
@@ -30,24 +30,26 @@
 	<!-- Schema.org for Google -->
 	<meta itemprop="name" content="Claves Rítmicas">
 	<meta itemprop="description" content="Una clave rítmica es una pequeña frase o motivo rítmico mínimo que solo toma en cuenta la secuencia de golpes y no las alturas o los timbres. Se representa mediante una secuencia de números donde cada número indica la duración entre golpes sucesivos.">
-	<meta itemprop="image" content="https://lengua.la/cr/share.jpg">
+	<meta itemprop="image" content="https://sanxofon.github.io/cr/share.jpg">
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary">
 	<meta name="twitter:title" content="Claves Rítmicas">
 	<meta name="twitter:description" content="Una clave rítmica es una pequeña frase o motivo rítmico mínimo que solo toma en cuenta la secuencia de golpes y no las alturas o los timbres. Se representa mediante una secuencia de números donde cada número indica la duración entre golpes sucesivos.">
 	<meta name="twitter:site" content="@sanxofon">
 	<meta name="twitter:creator" content="@sanxofon">
-	<meta name="twitter:image:src" content="https://lengua.la/cr/share.jpg">
+	<meta name="twitter:image:src" content="https://sanxofon.github.io/cr/share.jpg">
 	<!-- Disable automatic phone number detection. -->
 	<meta name="format-detection" content="telephone=no">
 	<!-- FAVICON -->
-	<link rel="shortcut icon" href="https://lengua.la/cr/logo.png" type="image/png">
-	<link rel="icon" href="https://lengua.la/cr/logo.png" type="image/png">
+	<link rel="shortcut icon" href="https://sanxofon.github.io/cr/logo.png" type="image/png">
+	<link rel="icon" href="https://sanxofon.github.io/cr/logo.png" type="image/png">
 
 	<!-- CSS -->
-	<link href="cr-style.css" rel="stylesheet">
+	<link href="cr-demo.css" rel="stylesheet">
 	<!-- Memoria Add On CSS -->
 	<link href="cr-memoria.css" rel="stylesheet">
+	<!-- SETTINGS Modal -->
+	<link rel="stylesheet" href="settings-modal.css">
 </head>
 <body>
 	<div class="centro">
@@ -63,7 +65,7 @@
 			</div>
 			<div class="inputLine">
 				<button id="playButton" class="playButton" onclick="togglePlay();">▶</button>
-				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="1" max="1200" step="1" oninput="updateTempo()">
+				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="1" max="2000" step="1" oninput="updateTempo()">
 				<span id="tempoValue"></span>
 				<select id="tempoType">
 					<option value="bpm">BPM</option>
@@ -92,8 +94,94 @@
     </div>
 		
 	<div class="footer">
-		<a href="https://lengua.la">La Lengua</a></b>
+		<a href="https://lengua.la">La Lengua</a>
+		
 	</div>
+	<!-- Settings -->
+	<div id="settings-button-container">
+		<button id="settings-open-btn" class="settings-button" title="Open Settings">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="12" cy="12" r="3"></circle>
+				<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+			</svg>
+		</button>
+	</div>
+	<!-- SETTINGS Modal -->
+	<div id="settings-modal" class="settings-modal">
+		<div class="settings-modal-content">
+			<div class="settings-modal-header">
+				<h2>Configuración</h2>
+				<span id="settings-close" class="settings-close">&times;</span>
+			</div>
+			<div class="settings-modal-body">
+				<!-- ArrowAngle Setting -->
+				<div class="settings-section">
+					<h3>Ángulo de la Flecha</h3>
+					<div class="settings-control">
+						<label for="settings-arrowAngle">Ángulo inicial de la flecha: <span id="settings-arrowAngle-value">7</span></label>
+						<input type="range" id="settings-arrowAngle" min="-100" max="-90" step="1" value="-92">
+						<p class="settings-help">El Valor debe ser un poco menor a <b>-90</b>. Por ejemplo: <b>-92</b></p>
+					</div>
+				</div>
+				<!-- Tolerance Setting -->
+				<div class="settings-section">
+					<h3>Tolerancia</h3>
+					<div class="settings-control">
+						<label for="settings-tolerance">Tolerancia de detección del Vertex: <span id="settings-tolerance-value">7</span></label>
+						<input type="range" id="settings-tolerance" min="1" max="20" value="7">
+						<p class="settings-help">Los valores más altos hacen que sea más fácil detectar vértices cuando pasa la flecha pero puede generar repeticiones en velocidades lentas.</p>
+					</div>
+				</div>
+	
+				<!-- Sound Delay Setting -->
+				<div class="settings-section">
+					<h3>Retraso del <i>timeout</i> del sonido</h3>
+					<div class="settings-control">
+						<label for="settings-sound-delay">Delay (ms): <span id="settings-sound-delay-value">200</span></label>
+						<input type="range" id="settings-sound-delay" min="50" max="500" step="10" value="200">
+						<p class="settings-help">Controla el tiempo de espera antes de permitir que se reproduzca nuevamente el mismo sonido.</p>
+					</div>
+				</div>
+	
+				<!-- Color Palette Setting -->
+				<div class="settings-section">
+					<h3>Paleta de Colores</h3>
+					<div class="settings-colors-container">
+						<div class="settings-color-item">
+							<label for="settings-color-1">Color 1:</label>
+							<input type="color" id="settings-color-1" value="#00FFFF">
+						</div>
+						<div class="settings-color-item">
+							<label for="settings-color-2">Color 2:</label>
+							<input type="color" id="settings-color-2" value="#FF0000">
+						</div>
+						<div class="settings-color-item">
+							<label for="settings-color-3">Color 3:</label>
+							<input type="color" id="settings-color-3" value="#FFFF00">
+						</div>
+						<div class="settings-color-item">
+							<label for="settings-color-4">Color 4:</label>
+							<input type="color" id="settings-color-4" value="#00FF00">
+						</div>
+						<div class="settings-color-item">
+							<label for="settings-color-5">Color 5:</label>
+							<input type="color" id="settings-color-5" value="#FF7700">
+						</div>
+						<div class="settings-color-item">
+							<label for="settings-color-6">Color 6:</label>
+							<input type="color" id="settings-color-6" value="#0077FF">
+						</div>
+					</div>
+					<button id="settings-reset-colors" class="settings-button settings-reset-btn">Volver a Colores por Defecto</button>
+				</div>
+			</div>
+			<div class="settings-modal-footer">
+				<button id="settings-save" class="settings-button settings-save-btn">Guardar Configuración</button>
+				<button id="settings-cancel" class="settings-button settings-cancel-btn">Cancelar</button>
+			</div>
+		</div>
+	</div>
+	<!-- JS -->
 	<script>
 		// Ver detalles de cada operación en la consola
 		const verbose = false;
@@ -124,5 +212,8 @@
 	<script src="cr-memoria.js" type="text/javascript"></script>
 	<!-- Drawing claves special -->
 	<script src="cr-draw.js" type="text/javascript"></script>
+	<!-- SETTINGS Modal -->
+	<script src="settings-modal.js" type="text/javascript"></script>
+
 </body>
 </html>

@@ -490,16 +490,12 @@ class cr {
 		b[0]=parseInt(b[0]);
 		a[1]=a[1].split('').map(Number);
 		b[1]=b[1].split('').map(Number);
-		console.log("A y B:",a,b);
 		const n = this.mcm(a[0],b[0]);
-		console.log("N:",n);
 		// Patrón binario
 		var bin=[];
 		var ja=0,jb=0;
 		var na=n/a[0];
 		var nb=n/b[0];
-		console.log("na:",na);
-		console.log("nb:",nb);
 		var dopush=false;
 		for (var i = 0; i < n; i++) {
 			dopush=false;

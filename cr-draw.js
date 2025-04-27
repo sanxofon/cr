@@ -99,7 +99,7 @@ function printClaves() {
         <html>
             <head>
                 <title>Claves Guardadas</title>
-                <link href="cr-style.css" rel="stylesheet">
+                <link href="cr-demo.css" rel="stylesheet">
                 <style>
                     .grid-container {
                         display: grid;

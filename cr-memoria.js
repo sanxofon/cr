@@ -83,7 +83,7 @@ function shareClave() {
     }
     
     // Create the shareable URL with the encoded clave
-    const baseUrl = 'https://lengua.la/cr/';
+    const baseUrl = 'https://sanxofon.github.io/cr/';
     const shareableUrl = `${baseUrl}?c=${encodeURIComponent(claveValue)}`;
 
     // Create a modal window with the shareable URL and QR code image with id 'qrcode'

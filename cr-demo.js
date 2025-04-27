@@ -23,7 +23,7 @@ let currentHighlightedSquare = null;
 let currentTempoUnit = 0; // Track current tempo unit
 let totalTempoUnits = 0; // Total tempo units in the clave
 
-let colores = [
+window.colores = [
     '#00FFFF',
     '#FF0000',
     '#FFFF00',
@@ -42,18 +42,18 @@ window.addCircleMarks = true;
 
 // -------------------------------------------------
 // Variables for the rotating arrow
-var arrowAngle = -92; // Start at top (12 o'clock) with sound sync hack (90-1)
+window.arrowAngle = -92; // Start at top (12 o'clock) with sound sync hack (90-1)
 var isPlaying = false;
 var animationId = null;
 var tempo = 120; // BPM
-var limiTempo = [1,1200]; // Limits tempo to this range
+var limiTempo = [1,2000]; // Limits tempo to this range
 var tempoCPM = false; // cpm = true or bpm = false
 var lastFrameTime = 0;
 var vertexPoints = []; // Will store all vertex points of all claves
 var soundsPlayed = {}; // To track which sounds have been played
 var currentHighlightedVertex = null; // track the currently highlighted vertex
-let tolerance = 7; // Increased tolerance for better detection
-let soundsPlayedFlagDelay = 200; // Delay before resetting the flag
+window.tolerance = 7; // Increased tolerance for better detection
+window.soundsPlayedFlagDelay = 200; // Delay before resetting the flag
 
 // -------------------------------------------------
 // MEMORIA LOCALSTORAGE ----------------------------
@@ -177,7 +177,7 @@ if (canvas.getContext){
             animateArrow();
         } else {
             // Return to start position of clave
-            arrowAngle = -91; // Hack so it starts an instant earlier and the sound sync works better
+            window.arrowAngle = -91; // Hack so it starts an instant earlier and the sound sync works better
             playButton.textContent = "▶";
             cancelAnimationFrame(animationId);
             
@@ -225,7 +225,7 @@ if (canvas.getContext){
     // Function to check if the arrow is passing a vertex
     function checkVertexCollision() {
         // Normalize arrow angle to 0-360 range
-        const normalizedArrowAngle = ((arrowAngle % 360) + 360) % 360;
+        const normalizedArrowAngle = ((window.arrowAngle % 360) + 360) % 360;
         
         // Update current tempo unit based on arrow angle
         updateCurrentTempoUnit(normalizedArrowAngle);
@@ -247,7 +247,7 @@ if (canvas.getContext){
             const wrappedDiff = Math.min(angleDiff, 360 - angleDiff);
             
             // If we're passing a vertex and haven't played this sound recently
-            if (wrappedDiff < tolerance && !soundsPlayed[i]) {
+            if (wrappedDiff < window.tolerance && !soundsPlayed[i]) {
                 // Play sound based on which clave the vertex belongs to
                 const claveIndex = vertex[2] || 0;
                 const soundKeys = ['s1', 's2', 's3', 's4', 's5', 's6'];
@@ -276,7 +276,7 @@ if (canvas.getContext){
                 // Schedule to reset this flag after a short delay
                 setTimeout(() => {
                     soundsPlayed[i] = false;
-                }, soundsPlayedFlagDelay);
+                }, window.soundsPlayedFlagDelay);
             }
         }
         
@@ -305,7 +305,7 @@ if (canvas.getContext){
     
     // Function to highlight a vertex when it's hit
     function highlightVertex(x, y, claveIndex) {
-        const originalColor = colores[claveIndex % colores.length];
+        const originalColor = window.colores[claveIndex % window.colores.length];
         
         // Draw highlight
         ctx.beginPath();
@@ -333,11 +333,11 @@ if (canvas.getContext){
         const beatsPerSecond = tempo / 60;
         const msPerBeat = 1000 / beatsPerSecond;
         const degreesPerMs = 360 / (msPerBeat * claveLength); // XXX
-        arrowAngle += degreesPerMs * deltaTime;
+        window.arrowAngle += degreesPerMs * deltaTime;
         
         // Keep angle normalized but preserve direction for animation
-        if (arrowAngle >= 360) {
-            arrowAngle -= 360;
+        if (window.arrowAngle >= 360) {
+            window.arrowAngle -= 360;
         }
         
         // Check if we're passing any vertices
@@ -561,7 +561,7 @@ if (canvas.getContext){
                         "1",
                         0.3,
                         2,
-                        colores[co],
+                        window.colores[co],
                     );
                     poly.push(p);
                     // Store vertex point with clave index and angle
@@ -572,7 +572,7 @@ if (canvas.getContext){
                         (j%lc+1)+"/"+lc,
                         0.3,
                         2,
-                        colores[co],
+                        window.colores[co],
                     );
                 // }
                 if(lg[k]==kk) {
@@ -585,11 +585,11 @@ if (canvas.getContext){
                 }
                 kk++;
             }
-            drawPolygon(poly,colores[co],2);
+            drawPolygon(poly,window.colores[co],2);
         }
         // Draw the arrow if playing
         if (isPlaying) {
-            drawArrow(arrowAngle);
+            drawArrow(window.arrowAngle);
         }
         
         // Draw highlight if there's a recently hit vertex
@@ -603,7 +603,7 @@ if (canvas.getContext){
             ctx.arc(x, y, 10, 0, 2 * Math.PI);
             ctx.fillStyle = '#FFFFFF';
             ctx.fill();
-            ctx.strokeStyle = colores[claveIndex % colores.length];
+            ctx.strokeStyle = window.colores[claveIndex % window.colores.length];
             ctx.lineWidth = 3;
             ctx.stroke();
         }
@@ -640,7 +640,7 @@ if (canvas.getContext){
         totalTempoUnits = resultClave[0];
         
         // Normalize arrow angle to 0-360 range, accounting for the -91 offset
-        let normalizedAngle = ((arrowAngle + 91) % 360 + 360) % 360;
+        let normalizedAngle = ((window.arrowAngle + 91) % 360 + 360) % 360;
         
         // Calculate current tempo unit based on normalized angle
         // Map 0-360 degrees to 0-totalTempoUnits
@@ -743,8 +743,8 @@ if (canvas.getContext){
                 
                 square.dataset.column = columnIdx;
                 square.dataset.position = j;
-                square.style.backgroundColor = colores[0]; // Always use first color for result
-                square.style.borderColor = colores[0];
+                square.style.backgroundColor = window.colores[0]; // Always use first color for result
+                square.style.borderColor = window.colores[0];
                 square.style.opacity = '0.3';
                 
                 column.appendChild(square);
@@ -840,7 +840,7 @@ function toggleInputVisibility() {
 function toggleLightDark() {
     if(document.getElementById('inptLightDark').checked) {
         document.body.classList.add("invert");
-        colores = [
+        window.colores = [
             '#00cccc',
             '#cc0000',
             '#cccc00',
@@ -850,7 +850,7 @@ function toggleLightDark() {
         ];
     } else {
         document.body.classList.remove("invert");
-        colores = [
+        window.colores = [
             '#00FFFF',
             '#FF0000',
             '#FFFF00',
