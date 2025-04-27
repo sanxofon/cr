@@ -337,7 +337,7 @@ class cr {
 	// Completa una clave con su representación completa
 	static completarClave(c,asarray=false,reducir=false) {
 		const claveParsed = this.readClaveSimple(c);
-		const n = claveParsed.longitud;
+		let n = claveParsed.longitud;
 		const leadingZeroes = claveParsed.ceros;
 		const silencio = claveParsed.silencio;
 		c = claveParsed.golpes;

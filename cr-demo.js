@@ -42,7 +42,7 @@ window.addCircleMarks = true;
 
 // -------------------------------------------------
 // Variables for the rotating arrow
-var arrowAngle = -91; // Start at top (12 o'clock) with sound sync hack (90-1)
+var arrowAngle = -92; // Start at top (12 o'clock) with sound sync hack (90-1)
 var isPlaying = false;
 var animationId = null;
 var tempo = 120; // BPM
@@ -52,7 +52,7 @@ var lastFrameTime = 0;
 var vertexPoints = []; // Will store all vertex points of all claves
 var soundsPlayed = {}; // To track which sounds have been played
 var currentHighlightedVertex = null; // track the currently highlighted vertex
-let tolerance = 3; // Increased tolerance for better detection
+let tolerance = 7; // Increased tolerance for better detection
 let soundsPlayedFlagDelay = 200; // Delay before resetting the flag
 
 // -------------------------------------------------
