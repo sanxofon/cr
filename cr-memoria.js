@@ -72,6 +72,98 @@ function createSafeFilename(input) {
     return safeString;
 }
 
+// Share current clave URL
+function shareClave() {
+    // Get the current clave value
+    const claveValue = document.getElementById('clave').value;
+    
+    if (!claveValue || claveValue.trim() === '') {
+        alert('No hay clave para compartir');
+        return;
+    }
+    
+    // Create the shareable URL with the encoded clave
+    const baseUrl = 'https://lengua.la/cr/';
+    const shareableUrl = `${baseUrl}?c=${encodeURIComponent(claveValue)}`;
+
+    // Create a modal window with the shareable URL and QR code image with id 'qrcode'
+    // Create a modal container
+    let modal = document.createElement('div');
+    modal.className = 'share-modal';
+    
+    // Create modal content
+    let modalContent = document.createElement('div');
+    modalContent.className = 'share-modal-content';
+    
+    // Create close button
+    let closeBtn = document.createElement('span');
+    closeBtn.className = 'share-close-button';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.onclick = function() {
+        document.body.removeChild(modal);
+    };
+    
+    // Create title
+    let title = document.createElement('h2');
+    title.textContent = 'Compartir Clave';
+    
+    // Create URL display
+    let urlContainer = document.createElement('div');
+    urlContainer.className = 'share-url-container';
+    
+    let urlInput = document.createElement('input');
+    urlInput.type = 'text';
+    urlInput.value = shareableUrl;
+    urlInput.readOnly = true;
+    urlInput.className = 'share-url-input';
+    urlInput.onclick = function() {
+        this.select();
+    };
+    
+    // Create copy button
+    let copyBtn = document.createElement('button');
+    copyBtn.textContent = 'Copiar';
+    copyBtn.onclick = function() {
+        urlInput.select();
+        document.execCommand('copy');
+        this.textContent = 'Copiado!';
+        setTimeout(() => {
+            this.textContent = 'Copiar';
+        }, 2000);
+    };
+    
+    // Add URL elements to container
+    urlContainer.appendChild(urlInput);
+    urlContainer.appendChild(copyBtn);
+    
+    // Create QR code container
+    let qrContainer = document.createElement('div');
+    qrContainer.className = 'qr-container';
+    
+    let qrDiv = document.createElement('div');
+    qrDiv.id = 'qrcode';
+    
+    qrContainer.appendChild(qrDiv);
+    
+    // Assemble modal
+    modalContent.appendChild(closeBtn);
+    modalContent.appendChild(title);
+    modalContent.appendChild(urlContainer);
+    modalContent.appendChild(qrContainer);
+    modal.appendChild(modalContent);
+    
+    // Add modal to body
+    document.body.appendChild(modal);
+    
+    // QR CODE
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        width : 200,
+        height : 200
+    });
+    qrcode.makeCode(shareableUrl);
+
+}
+
 // Save clave to localStorage array of saved claves
 function saveClave() {
     const claveValue = document.getElementById('clave').value;

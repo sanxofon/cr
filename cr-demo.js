@@ -483,11 +483,6 @@ if (canvas.getContext){
         
         const full = cr.fullParse(clave,true,true);
         if(verbose) console.log("full:",full);
-        /* if(full.operation=='/') {
-        if(!addClavesOperacion) {
-        document.getElementById('addClavesOperacion').click();
-        }
-        } else */
         if(full.operation=='+') {
             if(addClavesOperacion) {
                 document.getElementById('addClavesOperacion').click();
@@ -500,17 +495,22 @@ if (canvas.getContext){
         const completas = [];
         for (let i = 0; i < r[1].length; i++) {
             const x = r[1][i].split('.');
-            completas.push(x[0]+'.'+cr.binary2clave(x[1]).join(''));
+            const cb = cr.binary2clave(x[1].split(''));
+            const leadingZeroes = parseInt(cb[1]);
+            if(leadingZeroes>0) completas.push(x[0]+'.'+'['+leadingZeroes+']'+cb[0].join(''));
+            else completas.push(x[0]+'.'+cb[0].join(''));
             if(window.addClavesOperacion) {
                 cr_obj.push([
                     parseInt(x[0]),
-                    cr.binary2clave(x[1]),
-                    parseInt(x[0]) // ? What is this third entry for?
+                    cb[0],
+                    leadingZeroes
                 ]);
             }
         }
-        
-        const claveRes = r[0][0]+'.'+r[0][1].join('_');
+        const leadingZeroesResult = parseInt(r[0][3]);
+        let claveRes = '';
+        if(leadingZeroesResult>0)claveRes = r[0][0]+'.'+'['+leadingZeroesResult+']'+r[0][1].join('_');
+        else claveRes = r[0][0]+'.'+r[0][1].join('_');
         document.getElementById('claveExpand').value = claveRes;
         document.getElementById('claveResult').value = cr.base62contract(claveRes);
         // Agregamos el resultado a la lista como clave nueva
@@ -519,7 +519,7 @@ if (canvas.getContext){
             cr_obj.unshift([
                 parseInt(r[0][0]),
                 r[0][1],
-                parseInt(r[0][0]) // ? What is this third entry for?
+                leadingZeroesResult
             ]);
         }
         if(verbose) console.log("cr_obj:",cr_obj);
@@ -536,8 +536,11 @@ if (canvas.getContext){
         // Reset vertex points
         vertexPoints = [];
         
+        const claveValue = document.getElementById('clave').value;
         // Captura la clave
-        var clave = leerClave(document.getElementById('clave').value);
+        var clave = leerClave(claveValue);
+
+        if(verbose)console.log("CLAVE:",claveValue,clave);
         
         imperceptible = 1;
         for (var c = 0; c < clave.length; c++) {
@@ -547,8 +550,12 @@ if (canvas.getContext){
             var poly = [];
             var co = window.addClaveResultado ? c:c+1;
             
-            for (var j = 0; j < clave[c][0]; j++) {
-                if(j<1){
+            // Recorre cada clave recibida:
+            const lc = clave[c][0] // longitud de la clave
+            const lg = clave[c][1] // lista de golpes
+            const lz = clave[c][2] // leadingZeroes
+            for (var j = lz; j <= lc+lz; j++) {
+                /* if(j%lc<1){
                     var p = drawMark(
                         q2a(0),
                         "1",
@@ -559,22 +566,22 @@ if (canvas.getContext){
                     poly.push(p);
                     // Store vertex point with clave index and angle
                     vertexPoints.push([p[0], p[1], co]);
-                } else {
+                } else { */
                     var p = drawMark(
-                        q2a(j/clave[c][2]),
-                        (j+1)+"/"+clave[c][2],
+                        q2a(j%lc/lc),
+                        (j%lc+1)+"/"+lc,
                         0.3,
                         2,
                         colores[co],
                     );
-                }
-                if(clave[c][1][k]==kk) {
+                // }
+                if(lg[k]==kk) {
                     poly.push(p);
                     // Store vertex point with clave index
                     vertexPoints.push([p[0], p[1], co]);
                     kk=0;
                     k++;
-                    if(k>clave[c][1].length-1)k=0;
+                    if(k>lg.length-1)k=0;
                 }
                 kk++;
             }
@@ -602,8 +609,9 @@ if (canvas.getContext){
         }
         
         // SQUARES VISUALIZATION -  Add at the end of the function:
-        var claveres = leerClave(document.getElementById('clave').value, true);
+        const claveres = leerClave(document.getElementById('claveResult').value, true);
         createSquareVisualization(claveres);
+        // createSquareVisualization(clave);
         
         if(verbose) console.log("Vertex points:", vertexPoints.length);
         
@@ -904,15 +912,18 @@ function rotateClaveResult(rotationAmount) {
     }
     if (verbose) console.log("rotateClaveResult", rotationAmount);
     const claveExpand = document.getElementById('claveExpand');
+
     const longitud = parseInt(claveExpand.value.split('.')[0]);
-    const clave = claveExpand.value.split('.')[1].split('_');
-    if (verbose) console.log("longitud:", longitud);
-    if (verbose) console.log("clave:", clave);
-    const rotatedClave = rotateArray(clave, rotationAmount);
+    const binaria = cr.clave2binary(claveExpand.value);
+    const rotatedClave = rotateArray(binaria.split('.')[1], rotationAmount);
     if (verbose) console.log("rotatedClave:", rotatedClave);
-    claveExpand.value = longitud + '.' + rotatedClave.join('_');
-    document.getElementById('claveResult').value = cr.base62contract(claveExpand.value);
-    document.getElementById('clave').value = cr.base62contract(claveExpand.value);
+    const claveRes = cr.binary2clave(rotatedClave);
+
+    if(claveRes[1]>0)claveExpand.value = longitud + '.' + '['+claveRes[1]+']' + claveRes[0].join('_');
+    else claveExpand.value = longitud + '.' + claveRes[0].join('_');
+    const contraida = cr.base62contract(claveExpand.value);
+    document.getElementById('claveResult').value = contraida;
+    document.getElementById('clave').value = contraida;
     go();
 }
 

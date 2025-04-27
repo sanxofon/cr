@@ -69,7 +69,7 @@ button{
     margin: 10px auto;
 }
 .inputLine input{
-    width: 60%;
+    width: 50%;
     max-width: 480px;
     text-align: center;
     margin: 0 auto;
@@ -77,8 +77,8 @@ button{
     border: 1px solid #000;
     color: #aaa;
     font-size: 1.3em;
-    /* border-top-left-radius: 0.7em;
-    border-bottom-left-radius: 0.7em; */
+    border-top-left-radius: 0.7em;
+    border-bottom-left-radius: 0.7em;
 }
 .inputLine input[type=checkbox],.inputLine1 input[type=checkbox]{
     display: inline-block;
@@ -107,7 +107,25 @@ button{
 .invert {
     filter: invert(1);
 }
+.round-left {
+    border-top-left-radius: 0.7em!important;
+    border-bottom-left-radius: 0.7em!important;
+}
+.round-right {
+    border-top-right-radius: 0.7em!important;
+    border-bottom-right-radius: 0.7em!important;
+}
 .toggle {
+    padding: 2px 5px;
+    width: 10%;
+    background: #222;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 0%;
+    height: 1.7em;
+}
+.toggli {
     padding: 2px 5px;
     width: 10%;
     background: #000;
@@ -115,39 +133,17 @@ button{
     color: #fff;
     font-weight: bold;
     border-radius: 0%;
-    border-top-left-radius: 0%;
-    border-bottom-left-radius: 0%;
     height: 1.7em;
-    border-top-right-radius: 0.7em;
-    border-bottom-right-radius: 0.7em;
-}
-.toggli {
-    padding: 2px 5px;
-    width: 5%;
-    background: #000;
-    border: none;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 0%;
-    border-top-right-radius: 0%;
-    border-bottom-right-radius: 0%;
-    height: 1.7em;
-    border-top-left-radius: 0.7em;
-    border-bottom-left-radius: 0.7em;
 }
 .toggln {
     padding: 2px 5px;
-    width: 5%;
+    width: 10%;
     background: #000;
     border: none;
     color: #fff;
     font-weight: bold;
     border-radius: 0%;
-    border-top-right-radius: 0%;
-    border-bottom-right-radius: 0%;
     height: 1.7em;
-    border-top-left-radius: 0%;
-    border-bottom-left-radius: 0%;
 }
 .toggle:hover,.toggli:hover,.toggln:hover {
     background: #ddd;
@@ -318,7 +314,7 @@ input[type=range] {
 @media (orientation: portrait) {
     body{
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: auto 1fr;
     }
     .barras {
         top: 10%;
