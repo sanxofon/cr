@@ -3,12 +3,12 @@ class cr {
 	// GENERAL CLAVE READ METHOD
 	static readClaveSimple(clave) {
 		clave = String(clave);
-		if(clave.split('.').length==1)clave = clave+'.'+clave; // FIX: 7 => 7.7
-		const claveParsed = clave.match(/^(-?)([1-9][0-9]*)\.(\[([1-9][0-9]*)\])?([1-9A-Za-z][0-9A-Za-z_]*)/);
+		const claveParsed = clave.match(/^(-?)([1-9][0-9]*)\.(\[([1-9][0-9]*)\])?([1-9A-Za-z][0-9A-Za-z_]*)?/);
 		if(claveParsed==null) {
-			throw new Error('Clave inválida:');
+			throw new Error('Clave inválida:'+clave);
 		}
 		const longitud = parseInt(claveParsed[2]);
+		if (claveParsed[5]==undefined) claveParsed[5] = longitud+""; // FIX: 7 => 7.7
 		let leadingZeroes = 0;
 		if (claveParsed[4]!=undefined)leadingZeroes=parseInt(claveParsed[4]); // leading zeroes
 		let silencio = claveParsed[1];
@@ -59,7 +59,6 @@ class cr {
 	}
 	// Contrae una representación numérica a su forma base62
 	static base62contract(clave) { // 10_2_13 => a2d
-
 		const claveParsed = this.readClaveSimple(clave); //longitud, golpes, ceros, silencio
 
 		const longitud = claveParsed.longitud;
@@ -179,9 +178,9 @@ class cr {
 	// Compara dos claves para ordenamiento
 	static compareClaves(a, b) {
 		a=String(a).split('.');
-		a=parseInt(a[0]);
+		a=Math.abs(parseInt(a[0]));
 		b=String(b).split('.');
-		b=parseInt(b[0]);
+		b=Math.abs(parseInt(b[0]));
 		return b-a;
 	}
 	// Compara dos enteros para ordenamiento
@@ -380,7 +379,7 @@ class cr {
 			
 		}
 		
-		if(asarray)return [n,s,(silencio!=='' ? 1:0),leadingZeroes]; // array
+		if(asarray)return [n,s,silencio,leadingZeroes]; // array
 		else if(leadingZeroes>0)return silencio+n+'.'+'['+leadingZeroes+']'+this.juntar(s);
 		else return silencio+n+'.'+this.juntar(s);
 	}
@@ -480,14 +479,14 @@ class cr {
 				b.push(0);
 			}
 		}
-		return cc[0]+"."+b.join('');
+		return cc[2]+cc[0]+"."+b.join('');
 	}
 	// Conjuga dos claves rítmicas
 	static superponer(a,b,asarray=false) {
 		a = this.clave2binary(a).split('.');
 		b = this.clave2binary(b).split('.');
-		a[0]=parseInt(a[0]);
-		b[0]=parseInt(b[0]);
+		a[0]=Math.abs(parseInt(a[0]));
+		b[0]=Math.abs(parseInt(b[0]));
 		a[1]=a[1].split('').map(Number);
 		b[1]=b[1].split('').map(Number);
 		const n = this.mcm(a[0],b[0]);
@@ -523,7 +522,7 @@ class cr {
 	static concatenar(a,b,asarray=false) {
 		a = this.completarClave(a,true);
 		b = this.completarClave(b,true);
-		const n = parseInt(a[0])+parseInt(b[0]);
+		const n = a[0]+b[0];
 		let leadingZeroes = 0;
 		const l = [a[1].length-1,b[1].length-1];
 		if(a[3]>0) {
@@ -547,7 +546,7 @@ class cr {
 	static cruzar(a,x,asarray=false) {
 		a = this.completarClave(a,true);
 		x = x.split('.');
-		x=parseInt(x[0]);
+		x=Math.abs(parseInt(x[0]));
 		const n = parseInt(a[0])*x;
 		var y=[];
 		for (var j = 0; j < x; j++) {
@@ -563,9 +562,13 @@ class cr {
 	// Realiza operaciones básicas entre claves rítmicas
 	static operar(a,b,op='+') {
 		if(op==='/') {
-			return this.superponer(a,b);
+			if(a[0]=='-') return b;
+			else if(b[0]=='-') return a;
+			else return this.superponer(a,b);
 		} else if(op==='+') {
-			return this.concatenar(b,a);//Ojo con el orden ya invertido!
+			if(a[0]=='-') return b;
+			else if(b[0]=='-') return a;
+			else return this.concatenar(b,a);//Ojo con el orden ya invertido!
 		} else if(op==='*') {
 			return this.cruzar(b,a);//Ojo con el orden ya invertido! a=x
 		} else {

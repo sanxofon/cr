@@ -39,6 +39,7 @@ var claveLength = 0;
 window.addClavesOperacion = true;
 window.addClaveResultado = true;
 window.addCircleMarks = true;
+window.inptVerCuadros = true;
 
 // -------------------------------------------------
 // Variables for the rotating arrow
@@ -46,7 +47,7 @@ window.arrowAngle = -92; // Start at top (12 o'clock) with sound sync hack (90-1
 var isPlaying = false;
 var animationId = null;
 var tempo = 120; // BPM
-var limiTempo = [1,2000]; // Limits tempo to this range
+var limiTempo = [1,3000]; // Limits tempo to this range
 var tempoCPM = false; // cpm = true or bpm = false
 var lastFrameTime = 0;
 var vertexPoints = []; // Will store all vertex points of all claves
@@ -92,7 +93,7 @@ function loadCheckboxState(id) {
 function saveConfigurationsToLocalStorage() {
     try {
         // Save checkbox states
-        const checkboxIds = ['addClavesOperacion', 'addClaveResultado', 'addCircleMarks', 'inptLightDark'];
+        const checkboxIds = ['addClavesOperacion', 'addClaveResultado', 'addCircleMarks', 'inptVerCuadros', 'inptLightDark'];
         checkboxIds.forEach(id => {
             const checkbox = document.getElementById(id);
             if (checkbox) {
@@ -490,11 +491,16 @@ if (canvas.getContext){
         }
         const r = full.legacy;
         if(verbose) console.log("r:",r);
-        
         const cr_obj = [];
         const completas = [];
         for (let i = 0; i < r[1].length; i++) {
             const x = r[1][i].split('.');
+            // Detectar '-' => "silencio" en X[0]
+            let silencio = "";
+            if(x[0][0]=='-') {
+                silencio = "-";
+                x[0] = x[0].substring(1);
+            }
             const cb = cr.binary2clave(x[1].split(''));
             const leadingZeroes = parseInt(cb[1]);
             if(leadingZeroes>0) completas.push(x[0]+'.'+'['+leadingZeroes+']'+cb[0].join(''));
@@ -503,7 +509,8 @@ if (canvas.getContext){
                 cr_obj.push([
                     parseInt(x[0]),
                     cb[0],
-                    leadingZeroes
+                    leadingZeroes,
+                    silencio
                 ]);
             }
         }
@@ -519,7 +526,8 @@ if (canvas.getContext){
             cr_obj.unshift([
                 parseInt(r[0][0]),
                 r[0][1],
-                leadingZeroesResult
+                leadingZeroesResult,
+                ''
             ]);
         }
         if(verbose) console.log("cr_obj:",cr_obj);
@@ -540,8 +548,6 @@ if (canvas.getContext){
         // Captura la clave
         var clave = leerClave(claveValue);
 
-        if(verbose)console.log("CLAVE:",claveValue,clave);
-        
         imperceptible = 1;
         for (var c = 0; c < clave.length; c++) {
             imperceptible*=clave[c][0];
@@ -552,7 +558,7 @@ if (canvas.getContext){
             
             // Recorre cada clave recibida:
             const lc = clave[c][0] // longitud de la clave
-            const lg = clave[c][1] // lista de golpes
+            const lg = clave[c][3]=='-' ? [0]:clave[c][1]; // lista de golpes
             const lz = clave[c][2] // leadingZeroes
             for (var j = lz; j <= lc+lz; j++) {
                 /* if(j%lc<1){
@@ -837,6 +843,16 @@ function toggleInputVisibility() {
     }
 }
 
+function showHideCuadros() {
+    if(window.inptVerCuadros) {
+        setTimeout(function() {
+            var squareblockDiv = document.getElementById("squareblock");
+            squareblockDiv.scrollTop = squareblockDiv.scrollHeight;
+        },200);
+    }
+    document.getElementById("squareblock").style.display = window.inptVerCuadros ? "block" : "none";
+}
+
 function toggleLightDark() {
     if(document.getElementById('inptLightDark').checked) {
         document.body.classList.add("invert");
@@ -958,7 +974,7 @@ document.getElementById('tempoType').addEventListener('change', function() {
 // Initialize when document is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Load checkbox states from localStorage
-    const checkboxIds = ['addClavesOperacion', 'addClaveResultado', 'addCircleMarks', 'inptLightDark'];
+    const checkboxIds = ['addClavesOperacion', 'addClaveResultado', 'addCircleMarks', 'inptVerCuadros', 'inptLightDark'];
     
     checkboxIds.forEach(id => {
         const savedState = loadCheckboxState(id);
@@ -972,6 +988,8 @@ document.addEventListener('DOMContentLoaded', function() {
             window[id] = savedState;
         }
     });
+
+    showHideCuadros();
     
     // Apply light/dark theme if needed
     if (document.getElementById('inptLightDark').checked) {

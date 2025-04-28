@@ -215,7 +215,7 @@ input[type=range] {
 .square-container-container {
     max-width: 80%;
     width: min-content;
-    max-height: 45vh;
+    max-height: 40vh;
     height: min-content;
     overflow-x: auto;
     overflow-y: auto;

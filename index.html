@@ -65,7 +65,7 @@
 			</div>
 			<div class="inputLine">
 				<button id="playButton" class="playButton" onclick="togglePlay();">▶</button>
-				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="1" max="2000" step="1" oninput="updateTempo()">
+				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="1" max="3000" step="1" oninput="updateTempo()">
 				<span id="tempoValue"></span>
 				<select id="tempoType">
 					<option value="bpm">BPM</option>
@@ -77,6 +77,8 @@
 				<label for="addCircleMarks">Ver Marcas</label>
 				<input type="checkbox" id="inptLightDark" name="inptLightDark" value="1" onchange="saveCheckboxState(this.id, this.checked); toggleLightDark()">
 				<label for="inptLightDark">Claroscuro</label>
+				<input type="checkbox" id="inptVerCuadros" name="inptVerCuadros" value="1" onchange="window.inptVerCuadros = this.checked; saveCheckboxState(this.id, this.checked); showHideCuadros()">
+				<label for="inptVerCuadros">Ver cuadros</label>
 			</div>
 			<div class="botones-memoria">
 				<button onclick="shareClave();" title="Compartir Clave Actual">🔗</button>
@@ -190,7 +192,7 @@
 			window.addEventListener('load', function() {
 				navigator.serviceWorker.register('/cr/sw.js').then(function(registration) {
 				// Registration was successful
-				console.log('ServiceWorker registrado exitosamente en: ', registration.scope);
+				if(verbose)console.log('ServiceWorker registrado exitosamente en: ', registration.scope);
 				}, function(err) {
 				// registration failed :(
 				console.log('Error en el registro del ServiceWorker: ', err);
