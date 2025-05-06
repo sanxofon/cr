@@ -62,19 +62,19 @@ window.soundsPlayedFlagDelay = 200; // Delay before resetting the flag
 function saveClaveToLocalStorage(clave) {
     try {
         localStorage.setItem('lastClave', clave);
-        if (verbose) console.log('Saved clave to localStorage:', clave);
+        if (verbose)console.log('Saved clave to localStorage:', clave);
     } catch (e) {
-        if (verbose) console.error('Error saving clave to localStorage:', e);
+        console.error('Error saving clave to localStorage:', e);
     }
 }
 // Load clave from localStorage
 function loadClaveFromLocalStorage() {
     try {
         const clave = localStorage.getItem('lastClave') || '';
-        if (verbose) console.log('Loaded clave from localStorage:', clave);
+        if (verbose)console.log('Loaded clave from localStorage:', clave);
         return clave;
     } catch (e) {
-        if (verbose) console.error('Error loading clave from localStorage:', e);
+        console.error('Error loading clave from localStorage:', e);
         return '';
     }
 }
@@ -105,9 +105,9 @@ function saveConfigurationsToLocalStorage() {
         localStorage.setItem('tempo', tempo);
         localStorage.setItem('tempoCPM', tempoCPM);
         
-        if (verbose) console.log('Saved all configurations to localStorage');
+        if (verbose)console.log('Saved all configurations to localStorage');
     } catch (e) {
-        if (verbose) console.error('Error saving configurations to localStorage:', e);
+        if (verbose)console.error('Error saving configurations to localStorage:', e);
     }
 }
 // -------------------------------------------------
@@ -266,9 +266,9 @@ if (canvas.getContext){
                         time: performance.now()
                     };
                     
-                    if(verbose) console.log("Playing sound at angle:", normalizedArrowAngle, "for vertex at:", vertexAngle);
+                    if(verbose)console.log("Playing sound at angle:", normalizedArrowAngle, "for vertex at:", vertexAngle);
                 } catch(e) {
-                    if(verbose) console.error("Error playing sound:", e);
+                    if(verbose)console.error("Error playing sound:", e);
                 }
                 
                 // Mark this sound as played
@@ -407,7 +407,7 @@ if (canvas.getContext){
         ctx.restore();
     }
     function drawTextVertical(txt,f="12px Arial",c="#999999") {
-        if(verbose) console.log("drawTextVertical",txt,f,c);
+        if(verbose)console.log("drawTextVertical",txt,f,c);
         ctx.font = f;
         ctx.fillStyle = c;
         ctx.save();
@@ -483,14 +483,14 @@ if (canvas.getContext){
         }
         
         const full = cr.fullParse(clave,true,true);
-        if(verbose) console.log("full:",full);
+        if(verbose)console.log("full:",full);
         if(full.operation=='+') {
             if(addClavesOperacion) {
                 document.getElementById('addClavesOperacion').click();
             }
         }
         const r = full.legacy;
-        if(verbose) console.log("r:",r);
+        if(verbose)console.log("r:",r);
         const cr_obj = [];
         const completas = [];
         for (let i = 0; i < r[1].length; i++) {
@@ -530,7 +530,7 @@ if (canvas.getContext){
                 ''
             ]);
         }
-        if(verbose) console.log("cr_obj:",cr_obj);
+        if(verbose)console.log("cr_obj:",cr_obj);
         
         return cr_obj;
     }
@@ -619,7 +619,7 @@ if (canvas.getContext){
         createSquareVisualization(claveres);
         // createSquareVisualization(clave);
         
-        if(verbose) console.log("Vertex points:", vertexPoints.length);
+        if(verbose)console.log("Vertex points:", vertexPoints.length);
         
     }
     
@@ -698,7 +698,7 @@ if (canvas.getContext){
     
     // DRAW SQUARES VISUALIZATION
     function createSquareVisualization(clave, claveIndex) {
-        if (verbose) console.log("createSquareVisualization", clave);
+        if (verbose)console.log("createSquareVisualization", clave);
         const container = document.getElementById('squareVisualization');
         container.innerHTML = ''; // Clear previous visualization
         
@@ -778,23 +778,23 @@ if (canvas.getContext){
     // Function to update the tempo
     function updateTempo(t=0) {
         if(isNaN(claveLength) || claveLength<=0) return;
-        if (verbose) console.log("Paso 2", "Clave Length:", claveLength);
+        if (verbose)console.log("Paso 2", "Clave Length:", claveLength);
         if(t<=0) {
             tempo = limitTempo(document.getElementById('tempoSlider').value);
         } else {
             if(tempoCPM) {
                 tempo = limitTempo(t * claveLength);
-                if (verbose) console.log("Paso 3", "Tempo BPM:", tempo);
+                if (verbose)console.log("Paso 3", "Tempo BPM:", tempo);
             } else {
                 tempo = parseInt(t);
             }
             document.getElementById('tempoSlider').value =  tempo;
-            if (verbose) console.log("Paso 4", "tempoSlider:", document.getElementById('tempoSlider').value);
+            if (verbose)console.log("Paso 4", "tempoSlider:", document.getElementById('tempoSlider').value);
         }
         if(tempoCPM) {
             document.getElementById('tempoType').value = 'cpm';
             document.getElementById('tempoValue').textContent = (tempo/claveLength).toFixed(2);
-            if (verbose) console.log("Paso 5", "Tempo Value:", document.getElementById('tempoValue').textContent);
+            if (verbose)console.log("Paso 5", "Tempo Value:", document.getElementById('tempoValue').textContent);
         } else {
             document.getElementById('tempoType').value = 'bpm';
             document.getElementById('tempoValue').textContent = tempo;
@@ -813,7 +813,7 @@ if (canvas.getContext){
             // Si está seleccionado CPM cambiamos los BPM
             if (tempoCPM) {
                 const t = parseFloat(document.getElementById('tempoValue').textContent);
-                if (verbose) console.log("Paso 1","Tempo CPM:", t);
+                if (verbose)console.log("Paso 1","Tempo CPM:", t);
                 // Se programa el `updateTempo` para dar tiempo al resultado de la clave
                 setTimeout("updateTempo("+t+");", 200);
             }
@@ -887,12 +887,12 @@ function loadClaveFromURL() {
     if (claveParam) {
         document.getElementById('clave').value = claveParam;
         saveClaveToLocalStorage(claveParam);
-        if (verbose) console.log('Clave cargada desde URL:', claveParam);
+        if (verbose)console.log('Clave cargada desde URL:', claveParam);
     } else {
         // Load last clave from localStorage
         const savedClave = loadClaveFromLocalStorage();
         document.getElementById('clave').value = savedClave;
-        if (verbose) console.log('Clave cargada desde localStorage:', savedClave);
+        if (verbose)console.log('Clave cargada desde localStorage:', savedClave);
     }
     setTimeout(function() {
         go(); // Process the loaded clave with a slight delay
@@ -926,13 +926,13 @@ function rotateClaveResult(rotationAmount) {
         alert("Error. Debe ingresar un numero.");
         return;
     }
-    if (verbose) console.log("rotateClaveResult", rotationAmount);
+    if (verbose)console.log("rotateClaveResult", rotationAmount);
     const claveExpand = document.getElementById('claveExpand');
 
     const longitud = parseInt(claveExpand.value.split('.')[0]);
     const binaria = cr.clave2binary(claveExpand.value);
     const rotatedClave = rotateArray(binaria.split('.')[1], rotationAmount);
-    if (verbose) console.log("rotatedClave:", rotatedClave);
+    if (verbose)console.log("rotatedClave:", rotatedClave);
     const claveRes = cr.binary2clave(rotatedClave);
 
     if(claveRes[1]>0)claveExpand.value = longitud + '.' + '['+claveRes[1]+']' + claveRes[0].join('_');
@@ -958,7 +958,7 @@ function doResize() {
     RR = WW / 2.3;// Longitud del radio del círculo
     CC = 2*Math.PI*RR;// Tau, longitud de la circunferencia
     redraw();
-    if(verbose) console.log("WW,XX,YY,RR,CC:",WW,XX,YY,RR,CC);
+    if(verbose)console.log("WW,XX,YY,RR,CC:",WW,XX,YY,RR,CC);
 }
 
 window.onresize = function(event) {

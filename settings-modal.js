@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toleranceValue.textContent = toleranceInput.value;
         
         soundDelayInput.value = settings.soundsPlayedFlagDelay || defaultSettings.soundsPlayedFlagDelay;
-        soundDelayValue.textContent = soundDelayInput.value;
+        soundDelayValue.textContent = soundDelayInput.value;        
         
         const colors = settings.colores || defaultSettings.colores;
         for (let i = 0; i < colorInputs.length; i++) {

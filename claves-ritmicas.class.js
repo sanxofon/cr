@@ -1,19 +1,20 @@
 // Clase principal que contiene métodos para operaciones matemáticas y rítmicas
 class cr {
+
 	// GENERAL CLAVE READ METHOD
 	static readClaveSimple(clave) {
 		clave = String(clave);
 		const claveParsed = clave.match(/^(-?)([1-9][0-9]*)\.(\[([1-9][0-9]*)\])?([1-9A-Za-z][0-9A-Za-z_]*)?/);
 		if(claveParsed==null) {
-			throw new Error('Clave inválida:'+clave);
+			throw new Error('Clave inválida en readClaveSimple:'+clave);
 		}
 		const longitud = parseInt(claveParsed[2]);
-		if (claveParsed[5]==undefined) claveParsed[5] = longitud+""; // FIX: 7 => 7.7
+		if (claveParsed[5]==undefined) claveParsed[5] = longitud+''; // FIX: 7 => 7.7
 		let leadingZeroes = 0;
 		if (claveParsed[4]!=undefined)leadingZeroes=parseInt(claveParsed[4]); // leading zeroes
 		let silencio = claveParsed[1];
 		let s = [];
-		if(claveParsed[5].includes("_")){
+		if(claveParsed[5].includes('_')){
 			s = claveParsed[5].split('_');
 		} else {
 			s = this.base62expand(claveParsed[5]).split('_');
@@ -22,15 +23,15 @@ class cr {
 			'longitud': longitud, 	// Longitud total
 			'golpes': s, 			// Numéricos
 			'ceros': leadingZeroes, // 0 || n
-			'silencio': silencio 	// "-" || ""
+			'silencio': silencio 	// '-' || ''
 		};
 	}
 
 	// BASE 62 -------------------------------------------------------------
 	// Codifica un número entero a base62 usando caracteres alfanuméricos
 	static base62encode(integer) {
-		const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		var arrayOfChars = chars.split("");
+		const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		var arrayOfChars = chars.split('');
 		if (integer === 0) {return '0';}
 		var s = '';
 		while (integer > 0) {
@@ -41,9 +42,9 @@ class cr {
 	}
 	// Decodifica una cadena base62 a un número entero
 	static base62decode(base62String) {
-		const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		var arrayOfChars = chars.split("");
-		var val = 0, base62Chars = base62String.split("").reverse();
+		const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		var arrayOfChars = chars.split('');
+		var val = 0, base62Chars = base62String.split('').reverse();
 		base62Chars.forEach(function(character, index){
 			val += arrayOfChars.indexOf(character) * Math.pow(62, index);
 		});
@@ -78,7 +79,7 @@ class cr {
 	// Limpia un array eliminando elementos vacíos
 	static clean(a) {
 		for(var i = 0; i < a.length; i++) {
-			if(a[i] === "") {
+			if(a[i] === '') {
 				a.splice(i, 1);
 			}
 		}
@@ -86,71 +87,75 @@ class cr {
 	}
 	// Convierte una expresión infix a postfix (notación polaca inversa)
 	static infixToPostfix(infix) {
-		var outputQueue = "";
+		var outputQueue = '';
 		var operatorStack = [];
 		var operators = {
-			// "^": {
+			// '^': {
 			// 	precedence: 4,
-			// 	associativity: "Right"
+			// 	associativity: 'Right'
 			// },
-			"*": {
+			'*': {
 				precedence: 4,
-				associativity: "Left"
+				associativity: 'Left'
 			},
-			"/": {
+			'/': {
 				precedence: 3,
-				associativity: "Left"
+				associativity: 'Left'
 			},
-			"+": {
+			'|': {
+				precedence: 3,
+				associativity: 'Left'
+			},
+			'+': {
 				precedence: 2,
-				associativity: "Left"
+				associativity: 'Left'
 			},
-			// "-": {
+			// '-': {
 			// 	precedence: 2,
-			// 	associativity: "Left"
+			// 	associativity: 'Left'
 			// }
 		};
-		infix = infix.replace(/\s+/g, "");
-		// infix = this.clean(infix.split(/([\+\-\*\/\^\(\)])/));
-		infix = this.clean(infix.split(/([\+\*\/\(\)])/));
+		infix = infix.replace(/\s+/g, '');
+
+		infix = this.clean(infix.split(/([\+\*\/\|\(\)])/));
+		
 		for(var i = 0; i < infix.length; i++) {
 			var token = infix[i];
-			// if("^*/+-".indexOf(token) !== -1) {
-			if("*/+".indexOf(token) !== -1) {
+			if('*/|+'.indexOf(token) !== -1) {
 				var o1 = token;
 				var o2 = operatorStack[operatorStack.length - 1];
-				// while("^*/+-".indexOf(o2) !== -1 && ((operators[o1].associativity === "Left" && operators[o1].precedence <= operators[o2].precedence) || (operators[o1].associativity === "Right" && operators[o1].precedence < operators[o2].precedence))) {
-				while("*/+".indexOf(o2) !== -1 && ((operators[o1].associativity === "Left" && operators[o1].precedence <= operators[o2].precedence) || (operators[o1].associativity === "Right" && operators[o1].precedence < operators[o2].precedence))) {
-					outputQueue += operatorStack.pop() + " ";
+				while('*/|+'.indexOf(o2) !== -1 && ((operators[o1].associativity === 'Left' && operators[o1].precedence <= operators[o2].precedence) || (operators[o1].associativity === 'Right' && operators[o1].precedence < operators[o2].precedence))) {
+					outputQueue += operatorStack.pop() + ' ';
 					o2 = operatorStack[operatorStack.length - 1];
 				}
 				operatorStack.push(o1);
-			} else if(token === "(") {
+			} else if(token === '(') {
 				operatorStack.push(token);
-			} else if(token === ")") {
-				while(operatorStack[operatorStack.length - 1] !== "(") {
-					outputQueue += operatorStack.pop() + " ";
+			} else if(token === ')') {
+				while(operatorStack[operatorStack.length - 1] !== '(') {
+					outputQueue += operatorStack.pop() + ' ';
 				}
 				operatorStack.pop();
 			} else {
-				outputQueue += token + " ";
+				outputQueue += token + ' ';
 			}
 		}
 		while(operatorStack.length > 0) {
-			outputQueue += operatorStack.pop() + " ";
+			outputQueue += operatorStack.pop() + ' ';
 		}
+
 		return outputQueue;
 	}
 	// Resuelve una expresión en notación postfix
 	static solvePostfix(postfix) {
 		var resultStack = [];
-		postfix = postfix.trim().split(" ");
-		// if(verbose) console.log('postfix:',postfix);
+		postfix = postfix.trim().split(' ');
+		if(verbose)console.log('postfix:',postfix);
 		for(var i = 0; i < postfix.length; i++) {
-			if(postfix[i] === "") {
+			if(postfix[i] === '') {
 				continue;
-				// } else if("^/*+-".indexOf(postfix[i]) !== -1) {
-			} else if("/*+".indexOf(postfix[i]) !== -1) {
+				// } else if('^/|*+-'.indexOf(postfix[i]) !== -1) {
+			} else if('/|*+'.indexOf(postfix[i]) !== -1) {
 				const a = resultStack.pop();
 				const b = resultStack.pop();
 				const c = this.operar(a,b,postfix[i]);
@@ -160,7 +165,7 @@ class cr {
 			}
 		}
 		if(resultStack.length > 1) {
-			return "error";
+			return 'error';
 		} else {
 			return resultStack.pop();
 		}
@@ -168,9 +173,9 @@ class cr {
 	// Verifica si una cadena es una clave válida
 	static esClave(s) {
 		s = String(s);
-		if("*/+".indexOf(s) !== -1)return false;
+		if('*/|+'.indexOf(s) !== -1)return false;
 		else {
-			s=s.split(".");
+			s=s.split('.');
 			if(s.length===1)return false;
 			else return true;
 		}
@@ -190,6 +195,7 @@ class cr {
 	// Parsea una expresión matemática y la procesa
 	static fullParse(expression, reducir=false, asarray=false) {
 		var infix = this.filtrar(expression); // filtrar
+		
 		const postfix = this.infixToPostfix(infix);
 		
 		// Extract all claves from the postfix expression
@@ -228,7 +234,7 @@ class cr {
 		const binaryResult = this.clave2binary(this.completarClave(result));
 		
 		// Extract operations from the expression
-		const operations = infix.match(/[\+\*\/]/g) || [];
+		const operations = infix.match(/[\+\*\/\|]/g) || [];
 		// Check if all operations are the same
 		function areAllOperationsSame(operations) {
 			if (!operations || operations.length <= 1) return true;
@@ -239,23 +245,27 @@ class cr {
 		let operation = '';
 		if(allSame) {
 			// Solo hay una operación o son todas la misma operación
-			const tipo = operations.length > 0 ? operations[0] : "none";
-			if(tipo=="+") {
+			const tipo = operations.length > 0 ? operations[0] : 'none';
+			if(tipo=='+') {
 				// Operación: Concatenación: +
-				if(verbose) console.log("Concatenación");
+				if(verbose)console.log('Concatenación');
 				operation = '+';
-			} else if(tipo=="/") {
+			} else if(tipo=='/') {
 				// Operación: Superposición: /
-				if(verbose) console.log("Superposición");
+				if(verbose)console.log('Superposición');
 				operation = '/';
+			} else if(tipo=='|') {
+				// Operación: Superposición XOR: |
+				if(verbose)console.log('Superposición XOR');
+				operation = '|';
 			} else {
 				// No hay operaciones
-				if(verbose) console.log("Sin operaciones");
+				if(verbose)console.log('Sin operaciones');
 				operation = '';
 			}
 		} else {
 			// Operaciones combinadas: + /
-			if(verbose) console.log("Operaciones múltiples");
+			if(verbose)console.log('Operaciones múltiples');
 			operation = 'm';
 		}
 		
@@ -304,7 +314,7 @@ class cr {
 	}
 	static multimcd(lista) {
 		// Calcula el máximo común divisor de una lista de números
-		if (toString.call(lista) !== "[object Array]") return	false;	
+		if (toString.call(lista) !== '[object Array]') return	false;	
 		var len, a, b;
 		len = lista.length;
 		if ( !len ) {
@@ -363,7 +373,7 @@ class cr {
 				}
 			}
 			if(reducir){
-				// if(verbose) console.log("Reducir:",n,s);
+				if(verbose)console.log('Reducir:',n,s);
 				reducir = this.multimcd(divs);
 				if(reducir>1){
 					n=n/reducir;
@@ -375,7 +385,7 @@ class cr {
 		}
 		if(leadingZeroes>0 && leadingZeroes>=s[s.length-1]){
 			// Revisa que leadingZeroes sea razonable
-			console.log("Demasiados CEROS INICIALES para el ÚLTIMO GOLPE:",leadingZeroes,'>=',s[s.length-1]);
+			console.log('Demasiados CEROS INICIALES para el ÚLTIMO GOLPE:',leadingZeroes,'>=',s[s.length-1]);
 			
 		}
 		
@@ -427,14 +437,14 @@ class cr {
 	}
 	// Multiplica un array de números por un factor
 	static multiplo(m,a) {
-		// if(verbose) console.log('antes:',a);
+		if(verbose)console.log('antes:',a);
 		var x = 0;
 		var z = a[0]*m; // No puede empezar con cero!!
 		for (var i = 0; i < a.length; i++) {
 			x+=parseInt(a[i])*m;
 			a[i]=x;
 		}
-		// if(verbose) console.log('despu:',a);
+		if(verbose)console.log('despu:',a);
 		return a;
 	}
 	// Convierte una representación binaria a clave
@@ -479,10 +489,10 @@ class cr {
 				b.push(0);
 			}
 		}
-		return cc[2]+cc[0]+"."+b.join('');
+		return cc[2]+cc[0]+'.'+b.join('');
 	}
 	// Conjuga dos claves rítmicas
-	static superponer(a,b,asarray=false) {
+	static superponer(a,b,op='or',asarray=false) {
 		a = this.clave2binary(a).split('.');
 		b = this.clave2binary(b).split('.');
 		a[0]=Math.abs(parseInt(a[0]));
@@ -496,15 +506,26 @@ class cr {
 		var na=n/a[0];
 		var nb=n/b[0];
 		var dopush=false;
+		var isxor = [0,0];
 		for (var i = 0; i < n; i++) {
 			dopush=false;
+			isxor = [0,0];
 			if(i%na==0){ // Es pulso de A
-				if(a[1][ja]==1)dopush=true;
+				if(a[1][ja]==1){
+					dopush=true;
+					isxor[0]=1;
+				}
 				ja++;
 			}
 			if(i%nb==0){ // Es pulso de B
-				if(b[1][jb]==1)dopush=true;
+				if(b[1][jb]==1){
+					dopush=true;
+					isxor[1]=1;
+				}
 				jb++;
+			}
+			if(op=='xor' && isxor[0]==1 && isxor[1]==1){
+				dopush=false;
 			}
 			if(dopush)bin.push(1);
 			else bin.push(0);
@@ -559,12 +580,51 @@ class cr {
 		else if (leadingZeroes>0) return n+'.'+'['+leadingZeroes+']'+this.juntar(y);
 		else  return n+'.'+this.juntar(y);
 	}
+	static fixClaveSimple(clave) {
+		// Corrige una clave rítmica
+		clave = String(clave);
+		const claveParsed = clave.match(/^(-)?([1-9][0-9]*)(\.)?(\[([1-9][0-9]*)\])?([0-9A-Za-z_]*)?/);
+		if(claveParsed==null) {
+			throw new Error('Clave inválida en fixCLave:'+clave);
+		}
+		let silencio = claveParsed[1] ? '-':'';
+		let longitud = parseInt(claveParsed[2]) || 0;
+		let dot = claveParsed[3] ? 1:0;
+		let leadingZeroes = parseInt(claveParsed[5]) || 0;
+		let golpes = claveParsed[6] || '';
+		if(longitud<=0) {
+			throw new Error('Clave inválida en fixCLave (sin longitud):'+clave);
+		}
+		if(dot==0 || golpes=='') {
+			golpes = ['0'];
+			leadingZeroes = 0;
+		} else {
+			if(golpes.includes('_')){
+				golpes = golpes.split('_').map(parseInt);
+			} else {
+				golpes = this.romper(golpes);
+			}
+			if(leadingZeroes>0 && leadingZeroes>=golpes[golpes.length-1]) {
+				// Revisa que leadingZeroes sea razonable
+				console.log('Demasiados CEROS INICIALES para el ÚLTIMO GOLPE:',leadingZeroes,'>=',golpes[golpes.length-1]);
+				leadingZeroes = golpes[golpes.length-1]-1;
+			}
+		}
+		const fixedClave = silencio + longitud + '.' + (leadingZeroes ? '[' + leadingZeroes + ']' : '') + golpes.join('_');
+		return fixedClave;
+	}
 	// Realiza operaciones básicas entre claves rítmicas
 	static operar(a,b,op='+') {
-		if(op==='/') {
+		a = this.fixClaveSimple(a);
+		b = this.fixClaveSimple(b);
+		if(verbose)console.log('operar: a,b -> op',a,b,' -> ',op);
+		if(op==='/' || op==='|' ) {
 			if(a[0]=='-') return b;
 			else if(b[0]=='-') return a;
-			else return this.superponer(a,b);
+			else {
+				if(op==='|')return this.superponer(a,b,'xor'); // version XOR
+				else return this.superponer(a,b);	// versión normal OR
+			}
 		} else if(op==='+') {
 			if(a[0]=='-') return b;
 			else if(b[0]=='-') return a;
@@ -572,247 +632,14 @@ class cr {
 		} else if(op==='*') {
 			return this.cruzar(b,a);//Ojo con el orden ya invertido! a=x
 		} else {
-			if(verbose) console.log("ERROR: Operacion desconocida: ",op);
-			if(verbose) console.log("a: ",a);
-			if(verbose) console.log("b: ",b);
+			if(verbose)console.log('ERROR: Operacion desconocida: ',op);
+			if(verbose)console.log('a: ',a);
+			if(verbose)console.log('b: ',b);
 		}
 	}
 	// Filtra una cadena permitiendo solo caracteres válidos
 	static filtrar(c) {
-		return c.replace(/[^a-zA-Z0-9\.+\-*\/()\[\]]/gi, '');
-	}
-	
-	// ----------------------------------------------------
-	// NUEVAS FUNCIONES DE ia -----------------------------
-	
-	// Modulo operations
-	static createModularPattern(base, modulus, type = 'linear', params = {}) {
-		const sequence = [];
-		
-		for(let i = 0; i < modulus; i++) {
-			let term;
-			
-			switch(type) {
-				case 'arithmetic':
-				term = base + params.step * i;
-				break;
-				
-				case 'geometric':
-				term = base * Math.pow(params.ratio, i);
-				break;
-				
-				case 'fibonacci':
-				term = this.fibonacci(i);
-				break;
-				
-				default: // lineal
-				term = base * i;
-			}
-			
-			sequence.push((term % modulus) + 1);
-		}
-		
-		const total = sequence.reduce((a, b) => a + b, 0);
-		return this.completarClave(`${total}.${sequence.join('')}`);
-	}
-	
-	static fibonacci(n) {
-		if(n <= 1) return 1;
-		return this.fibonacci(n - 1) + this.fibonacci(n - 2);
-	}
-	
-	// Core Number Theory Library
-	static primeFactors(n) {
-		let factors = {}; 
-		let i = 2;
-		while(i <= n) {
-			while(n % i === 0) {
-				factors[i] = (factors[i] || 0) + 1;
-				n /= i;
-			}
-			i++;
-		}
-		return factors;
-	}
-	
-	static isRhythmicIrreducible(a, b) {
-		return this.mcd(a, b) === 1;
-	}
-	
-	// Associativity example: (A + B) + C = A + (B + C)
-	static testAssociativity(a, b, c) {
-		const left = this.operar(this.operar(a,b,'+'),c,'+');
-		const right = this.operar(a,this.operar(b,c,'+'),'+');
-		return left === right;
-	}
-	
-	// Identity element (empty rhythm)
-	static identityElement() {
-		return '0.0'; // Zero-length pattern
-	}
-	
-	// Inverse element concept (pattern reversal)
-	static invertirClave(c) {
-		const [n, s] = this.completarClave(c,true);
-		return n+'.'+this.juntar(s.reverse());
-	}
-	
-	// Subgroup detection
-	static isSubgroup(set, operation='+') {
-		// Verify closure and existence of inverses
-		for(let a of set) {
-			if(!set.includes(this.invertirClave(a))) return false;
-			for(let b of set) {
-				const result = this.operar(a,b,operation);
-				if(!set.includes(result)) return false;
-			}
-		}
-		return true;
-	}
-	// ----------------------------------------------------
-	// Symmetry detection functions
-	// Check for palindrome symmetry
-	static isPalindrome(c) {
-		const inverted = this.invertirClave(c);
-		return this.compararClaves(c, inverted);
-	}
-	
-	// Detect rotational symmetry
-	static hasRotationalSymmetry(c, rotations) {
-		const original = this.completarClave(c, true)[1];
-		for(let i = 1; i <= rotations; i++) {
-			const rotated = this.rotarClave(c, i);
-			if(this.compararClaves(c, rotated)) return true;
-		}
-		return false;
-	}
-	
-	// Find all symmetric transformations within a group
-	static findSymmetries(patternSet) {
-		const symmetries = [];
-		for(const p of patternSet) {
-			if(this.isPalindrome(p)) symmetries.push({type: 'palindrome', pattern: p});
-			if(this.hasRotationalSymmetry(p, 2)) symmetries.push({type: 'rotational', pattern: p});
-			// Add reflection symmetry checks using conjugation
-			const conjugate = this.superponer(p, this.identityElement());
-			if(this.compararClaves(p, conjugate)) {
-				symmetries.push({type: 'reflection', pattern: p});
-			}
-		}
-		return symmetries;
-	}
-	
-	// Helper method to compare rhythms
-	static compararClaves(a, b) {
-		return this.completarClave(a) === this.completarClave(b);
-	}
-	
-	// Rotate rhythm by n positions
-	static rotarClave(c, n) {
-		let [total, sequence] = this.completarClave(c, true);
-		n = n % sequence.length;
-		const rotated = sequence.slice(-n).concat(sequence.slice(0, -n));
-		return total + '.' + this.juntar(rotated);
-	}
-	// Automated composition functions
-	// Generate composition using subgroup operations
-	static generateComposition(basePattern, operationSequence) {
-		let current = this.completarClave(basePattern);
-		const composition = [current];
-		
-		for(const op of operationSequence) {
-			current = this.operar(current, op.pattern, op.operation);
-			composition.push(current);
-		}
-		
-		return composition;
-	}
-	
-	// Automatically generate rhythmic variations using cosets
-	static generateVariations(basePattern, subgroupOps) {
-		const variations = [];
-		const baseGroup = this.primeFactors(parseInt(basePattern.split('.')[0]));
-		
-		subgroupOps.forEach(op => {
-			const variation = this.operar(basePattern, op, '*');
-			if(this.isRhythmicIrreducible(
-				parseInt(variation.split('.')[0]), 
-				baseGroup[0]
-			)) {
-				variations.push(variation);
-			}
-		});
-		
-		return variations;
-	}
-	
-	// Create fractal rhythm using cyclic subgroup generation
-	static createFractalRhythm(base, iterations) {
-		let rhythm = this.completarClave(base);
-		for(let i = 0; i < iterations; i++) {
-			rhythm = this.operar(rhythm, rhythm, '/');
-		}
-		return rhythm;
-	}
-	
-	// Generate rhythm permutations using symmetric group operations
-	static permuteRhythm(pattern, permutationOrder) {
-		const [total, sequence] = this.completarClave(pattern, true);
-		const permuted = permutationOrder.map(index => sequence[index]);
-		return total + '.' + this.juntar(permuted);
-	}
-	
-	// culturally informed rhythm generation using group operations
-	// Cultural rhythm templates
-	static culturalPatterns = {
-		'afroCuban': {
-			'son': '16.33424',
-			'rumba': '16.24334',
-			'bembe': '12.332322'
-		},
-		'indianTala': {
-			'jhaptal': '10.223222',
-			'teental': '16.4444',
-			'rupak': '7.322'
-		},
-		'westAfrican': {
-			'gahu': '12.222333',
-			'agbadza': '12.333222',
-			'kpanlogo': '16.444322'
-		},
-		'edm': {
-			'fourToFloor': '8.2222',
-			'dubstep': '16.31131131'
-		}
-	};
-	
-	// Generate culturally constrained variations
-	static generateCulturalVariation(basePattern, culture) {
-		const culturalSet = this.culturalPatterns[culture];
-		const validOperations = Object.values(culturalSet);
-		
-		return this.operar(
-			basePattern,
-			validOperations[Math.floor(Math.random() * validOperations.length)],
-			this.randomCulturalOperation(culture)
-		);
-	}
-	
-	// Culturally appropriate operations
-	static randomCulturalOperation(culture) {
-		const ops = {
-			afroCuban: ['+', '/'],
-			indianTala: ['*', '/'],
-			westAfrican: ['+', '*'],
-			edm: ['/']
-		};
-		return ops[culture][Math.floor(Math.random() * ops[culture].length)];
-	}
-	
-	// Validate cultural rhythmic integrity
-	static validateCulturalRhythm(pattern, culture) {
-		const referenceGroup = Object.values(this.culturalPatterns[culture]);
-		return this.isSubgroup([...referenceGroup, pattern]);
+		return c.replace(/[^a-zA-Z0-9\.+\-*\/|()\[\]]/gi, '');
 	}
 	
 }

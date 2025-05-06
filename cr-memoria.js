@@ -5,19 +5,19 @@
 function saveClaveToLocalStorage(clave) {
     try {
         localStorage.setItem('lastClave', clave);
-        if (verbose) console.log('Se guardó la clave en localStorage:', clave);
+        if (verbose)console.log('Se guardó la clave en localStorage:', clave);
     } catch (e) {
-        if (verbose) console.error('Error guardando la clave en localStorage:', e);
+        console.error('Error guardando la clave en localStorage:', e);
     }
 }
 // Load clave from localStorage
 function loadClaveFromLocalStorage() {
     try {
         const clave = localStorage.getItem('lastClave') || '';
-        if (verbose) console.log('Clave cargada de localStorage:', clave);
+        if (verbose)console.log('Clave cargada de localStorage:', clave);
         return clave;
     } catch (e) {
-        if (verbose) console.error('Error cargando clave de localStorage:', e);
+        console.error('Error cargando clave de localStorage:', e);
         return '';
     }
 }
@@ -48,7 +48,7 @@ function downloadClaveAsPNG(claveValue) {
         downloadLink.click();
         document.body.removeChild(downloadLink);
         
-        if (verbose) console.log('Imagen de clave descargada como PNG');
+        if (verbose)console.log('Imagen de clave descargada como PNG');
     } catch (e) {
         console.error('Error al descargar la imagen:', e);
     }
@@ -59,7 +59,7 @@ function createSafeFilename(input) {
     if (!input) return 'unnamed';
     
     // Replace invalid Windows filename characters: \ / : * ? " < > |
-    let safeString = input.replace(/[\\/:*?"<>|]/g, '_');
+    let safeString = input.replace(/[\\/:*?"<>|]/g, '_'); // Problema con operador XOR '|' en nombre de archivo
     
     // Replace spaces with underscores
     safeString = safeString.replace(/\s+/g, '_');
@@ -83,7 +83,7 @@ function shareClave() {
     }
     
     // Create the shareable URL with the encoded clave
-    const baseUrl = 'https://sanxofon.github.io/cr/';
+    const baseUrl = 'https://lengua.la/cr/';
     const shareableUrl = `${baseUrl}?c=${encodeURIComponent(claveValue)}`;
 
     // Create a modal window with the shareable URL and QR code image with id 'qrcode'
@@ -203,7 +203,7 @@ function saveClave() {
             
             savedClaves.push(claveObj);
             localStorage.setItem('savedClaves', JSON.stringify(savedClaves));
-            if (verbose) console.log('Clave guardada correctamente');
+            if (verbose)console.log('Clave guardada correctamente');
         } else {
             console.log('Esta clave ya está guardada',exists);
         }
