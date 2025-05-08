@@ -1,0 +1,135 @@
+<div class="manual-content">
+    <h1>Manual de Claves Rítmicas</h1>
+    
+    <div class="manual-toc">
+        <h2>Índice</h2>
+        <ul>
+            <li><a href="#seccion-screenshot">Captura de Pantalla</a></li>
+            <li><a href="#seccion-visualizacion-principal">Visualización Principal (Círculo Rítmico)</a></li>
+            <li><a href="#seccion-entrada">Sección de Entrada de Claves</a></li>
+            <li><a href="#seccion-control">Controles de Reproducción</a></li>
+            <li><a href="#seccion-opciones">Opciones de Visualización</a></li>
+            <li><a href="#seccion-memoria">Gestión de Memoria y Acciones Rápidas</a></li>
+            <li><a href="#seccion-cuadros">Visualización de Cuadros</a></li>
+            <li><a href="#seccion-empezar">Cómo Empezar</a></li>
+        </ul>
+    </div>
+    
+
+    <div class="manual-section" id="seccion-screenshot">
+        <img src="screenshot.png" alt="Captura de Pantalla" width="100%">
+    </div>
+
+
+    <div class="manual-section" id="seccion-visualizacion-principal">
+        <h2>Visualización Principal (Círculo Rítmico)</h2>
+        <div class="element-card">
+            <h3>Círculo Rítmico</h3>
+            <p>Es el área principal donde se visualizan las claves rítmicas. Las claves ingresadas se representan gráficamente mediante líneas y puntos dentro de un círculo que simboliza un ciclo temporal. Una flecha roja indica la posición actual durante la reproducción.</p>
+        </div>
+    </div>
+
+    <div class="manual-section" id="seccion-entrada">
+        <h2>Sección de Entrada de Claves</h2>
+        
+        <div class="element-card">
+            <h3>Campo de Claves Principal y Checkbox Asociado</h3>
+            <div><img src="screenshot-claves.png" alt="Captura de Pantalla" width="100%"></div>
+            <p>Aquí es donde ingresas las claves rítmicas y las operaciones entre ellas. Puedes usar:</p>
+            <ul>
+                <li><strong>+</strong> para concatenación</li>
+                <li><strong>/</strong> para superposición</li>
+                <li><strong>*</strong> para multiplicación</li>
+            </ul>
+            <p>El checkbox a la izquierda del campo (marcado por defecto) controla si la clave original o la operación ingresada se visualiza en el círculo rítmico.</p>
+            <p>A la derecha del campo, un botón con un check ✔️ aplica la clave u operación ingresada.</p>
+        </div>
+
+        <div class="element-card">
+            <h3>Campo de Clave Resultado y Controles Asociados</h3>
+            <p>Este campo muestra el resultado de la operación de claves o la clave simple ingresada. Es de solo lectura.</p>
+            <p>El checkbox a su izquierda controla si la clave resultado se visualiza en el círculo rítmico.</p>
+            <p>Los botones, (flecha izquierda) y (flecha derecha) permiten respectivamente: ocultar/mostrar la clave expandida, y rotar la clave resultado hacia la izquierda o derecha.</p>
+        </div>
+    </div>
+
+    <div class="manual-section" id="seccion-control">
+        <h2>Controles de Reproducción</h2>
+        
+        <div class="element-card">
+            <h3>Botón de Play/Pause</h3>
+            <p>Inicia (▶️) o detiene (⏸️) la reproducción del patrón rítmico actual visualizado en el círculo.</p>
+        </div>
+
+        <div class="element-card">
+            <h3>Control de Tempo</h3>
+            <p>Permite ajustar la velocidad de reproducción del patrón rítmico:</p>
+            <ul>
+                <li><strong>Slider de Tempo</strong>: Arrastra para cambiar el tempo de forma continua.</li>
+                <li><strong>Campo Numérico de Tempo</strong>: Ingresa un valor numérico específico para el tempo.</li>
+                <li><strong>Selector de Unidad de Tempo</strong>: Elige entre CPM (Ciclos Por Minuto) o BPM (Beats Por Minuto).</li>
+            </ul>
+            <p>El rango de tempo usualmente es entre 1 y 3000.</p>
+        </div>
+    </div>
+
+    <div class="manual-section" id="seccion-opciones">
+        <h2>Opciones de Visualización</h2>
+        <div class="element-card">
+            <h3>Checkbox "Ver Marcas"</h3>
+            <p>Muestra u oculta las marcas divisorias en el círculo rítmico, que ayudan a visualizar las subdivisiones del ciclo.</p>
+        </div>
+        <div class="element-card">
+            <h3>Checkbox "Claroscuro"</h3>
+            <p>Activa o desactiva un modo de visualización de alto contraste o tema oscuro/claro para la interfaz.</p>
+        </div>
+        <div class="element-card">
+            <h3>Checkbox "Ver cuadros"</h3>
+            <p>Muestra u oculta la sección de "Visualización de Cuadros" (ver más abajo), que ofrece otra representación del ritmo.</p>
+        </div>
+    </div>
+
+    <div class="manual-section" id="seccion-memoria">
+        <h2>Gestión de Memoria y Acciones Rápidas</h2>
+        
+        <div class="element-card">
+            <h3>Botones de Acción:</h3>
+            <p>Estos botones permiten interactuar con la aplicación y gestionar tus claves:</p>
+            <ul>
+                <li><strong>❔ Ayuda</strong>: Muestra este manual o información de ayuda.</li>
+                <li><strong>🔗 Compartir</strong>: Genera un enlace para compartir la clave actual.</li>
+                <li><strong>💾 Guardar</strong>: Almacena la clave actual en la memoria local del navegador.</li>
+                <li><strong>📂 Abrir</strong>: Muestra una lista de las claves guardadas para cargarlas.</li>
+                <li><strong>📥 Importar</strong>: Permite importar claves desde un archivo JSON.</li>
+                <li><strong>📦 Exportar</strong>: Permite exportar las claves guardadas a un archivo JSON.</li>
+                <li><strong>📇 Imprimir</strong>: Prepara las claves para su impresión.</li>
+                <li><strong>🧻 Vaciar</strong>: Elimina todas las claves guardadas en la memoria local.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="manual-section" id="seccion-cuadros">
+        <h2>Visualización de Cuadros</h2>
+        <div class="element-card">
+            <h3>Representación en Cuadros y Notación</h3>
+            <p>Ubicada debajo de los controles principales (si la opción "Ver cuadros" está activa), esta sección muestra una representación lineal del ritmo mediante bloques de colores. Cada bloque representa un pulso o subdivisión, y su color o altura puede indicar un golpe.</p>
+            <p>Debajo de los cuadros, se muestran números (que representan las duraciones de la clave) y una notación musical simplificada de los golpes.</p>
+            <p>Durante la reproducción, los cuadros se resaltan secuencialmente sincronizados con la flecha del círculo rítmico y el sonido.</p>
+        </div>
+    </div>
+
+    <div class="manual-section" id="seccion-empezar">
+        <h2>Cómo Empezar: Ejemplo Básico</h2>
+        <div class="element-card">
+            <p>Para familiarizarte rápidamente con la aplicación:</p>
+            <ol>
+                <li><strong>Ingresa una clave:</strong> Escribe una clave conocida, por ejemplo, la clave de son, en el campo principal de "CLAVES".</li>
+                <li><strong>Aplica la clave:</strong> Presiona el botón con el check ✔️ a la derecha del campo de entrada o presiona Enter. Verás cómo se dibuja la clave en el círculo rítmico. El campo "RESULTADO" mostrará la misma clave.</li>
+                <li><strong>Reproduce:</strong> Haz clic en el botón de Play (▶️). Observa cómo la flecha roja gira en el círculo y cómo se resaltan los cuadros (si están visibles), sincronizados con el sonido.</li>
+                <li><strong>Ajusta el Tempo:</strong> Usa el slider o el campo numérico para cambiar la velocidad.</li>
+                <li><strong>Prueba una operación:</strong> Intenta ingresar una operación, como en el campo "CLAVES" y aplica los cambios. Observa cómo se actualiza la visualización y el sonido.</li>
+            </ol>
+            <p>¡Explora las demás opciones y botones para descubrir todo el potencial de la herramienta!</p>
+        </div>
+    </div>
+</div>

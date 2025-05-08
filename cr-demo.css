@@ -206,6 +206,26 @@ input[type=range] {
     vertical-align: middle;
 }
 
+input[type=number] {
+    width: 60px;
+    text-align: center;
+    margin: 0 10px;
+    vertical-align: middle;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Remove spinner buttons for a cleaner look */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
 .escalar {
     font-size: 1.3em;
     transform: scale(1.4);	
@@ -340,4 +360,62 @@ input[type=range] {
     width: 200px;
     height: 200px;
     margin: 0 auto;
+}
+
+#claveResult {
+    background-color: #ddd;
+    color: #333;
+    font-size: 1em;
+    height: 24px;
+}
+.smallt {
+    height: 28px;
+    font-size: 0.9em;
+    line-height: 100%;
+}
+
+/* Manual Info Modal Styles */
+.manual-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff!important;
+    color: #333!important;
+}
+.manual-content a {
+    color: #933;
+    text-decoration: none;
+}
+.manual-content a:visited {
+    color: #633;
+}
+.manual-content a:hover {
+    color: #944;
+    text-decoration: underline;
+}
+.manual-section {
+    margin: 30px 0;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+.manual-toc {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+.element-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+.element-card h3 {
+    margin-top: 0;
+}
+@media (max-width: 600px) {
+    .manual-content {
+        padding: 10px;
+    }
 }

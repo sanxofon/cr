@@ -6,7 +6,9 @@ class cr {
 		clave = String(clave);
 		const claveParsed = clave.match(/^(-?)([1-9][0-9]*)\.(\[([1-9][0-9]*)\])?([1-9A-Za-z][0-9A-Za-z_]*)?/);
 		if(claveParsed==null) {
-			throw new Error('Clave inválida en readClaveSimple:'+clave);
+			console.error('Clave inválida en readClaveSimple:'+clave);
+			return false;
+			// throw new Error('Clave inválida en readClaveSimple:'+clave);
 		}
 		const longitud = parseInt(claveParsed[2]);
 		if (claveParsed[5]==undefined) claveParsed[5] = longitud+''; // FIX: 7 => 7.7
@@ -585,7 +587,9 @@ class cr {
 		clave = String(clave);
 		const claveParsed = clave.match(/^(-)?([1-9][0-9]*)(\.)?(\[([1-9][0-9]*)\])?([0-9A-Za-z_]*)?/);
 		if(claveParsed==null) {
-			throw new Error('Clave inválida en fixCLave:'+clave);
+			console.error('Clave inválida en fixCLave:'+clave);
+			return false;
+			// throw new Error('Clave inválida en fixCLave:'+clave);
 		}
 		let silencio = claveParsed[1] ? '-':'';
 		let longitud = parseInt(claveParsed[2]) || 0;
@@ -593,7 +597,9 @@ class cr {
 		let leadingZeroes = parseInt(claveParsed[5]) || 0;
 		let golpes = claveParsed[6] || '';
 		if(longitud<=0) {
-			throw new Error('Clave inválida en fixCLave (sin longitud):'+clave);
+			console.error('Clave inválida en fixCLave (sin longitud):'+clave);
+			return false;
+			// throw new Error('Clave inválida en fixCLave (sin longitud):'+clave);
 		}
 		if(dot==0 || golpes=='') {
 			golpes = ['0'];

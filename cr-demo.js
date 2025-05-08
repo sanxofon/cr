@@ -48,7 +48,7 @@ var isPlaying = false;
 var animationId = null;
 var tempo = 120; // BPM
 var limiTempo = [1,3000]; // Limits tempo to this range
-var tempoCPM = false; // cpm = true or bpm = false
+var tempoCPM = true; // cpm = true or bpm = false
 var lastFrameTime = 0;
 var vertexPoints = []; // Will store all vertex points of all claves
 var soundsPlayed = {}; // To track which sounds have been played
@@ -793,11 +793,30 @@ if (canvas.getContext){
         }
         if(tempoCPM) {
             document.getElementById('tempoType').value = 'cpm';
-            document.getElementById('tempoValue').textContent = (tempo/claveLength).toFixed(2);
-            if (verbose)console.log("Paso 5", "Tempo Value:", document.getElementById('tempoValue').textContent);
+            document.getElementById('tempoValue').value = (tempo/claveLength).toFixed(2);
+            if (verbose)console.log("Paso 5", "Tempo Value:", document.getElementById('tempoValue').value);
         } else {
             document.getElementById('tempoType').value = 'bpm';
-            document.getElementById('tempoValue').textContent = tempo;
+            document.getElementById('tempoValue').value = tempo;
+        }
+    }
+
+    // Add new function to handle direct tempo input
+    function updateTempoFromInput() {
+        let inputValue = parseFloat(document.getElementById('tempoValue').value);
+        if (isNaN(inputValue) || inputValue < 1) {
+            inputValue = 1;
+        } else if (inputValue > 3000) {
+            inputValue = 3000;
+        }
+        
+        if (tempoCPM) {
+            // If in CPM mode, convert to BPM for internal use
+            updateTempo(inputValue);
+        } else {
+            // If in BPM mode, use the value directly
+            tempo = limitTempo(inputValue);
+            document.getElementById('tempoSlider').value = tempo;
         }
     }
 
@@ -812,7 +831,7 @@ if (canvas.getContext){
             saveConfigurationsToLocalStorage();
             // Si está seleccionado CPM cambiamos los BPM
             if (tempoCPM) {
-                const t = parseFloat(document.getElementById('tempoValue').textContent);
+                const t = parseFloat(document.getElementById('tempoValue').value);
                 if (verbose)console.log("Paso 1","Tempo CPM:", t);
                 // Se programa el `updateTempo` para dar tiempo al resultado de la clave
                 setTimeout("updateTempo("+t+");", 200);
@@ -943,6 +962,103 @@ function rotateClaveResult(rotationAmount) {
     go();
 }
 
+
+// Function to show information modal with manual content
+function showInfo() {
+    // Get the modal
+    const modal = document.getElementById('info-modal');
+    const contentDiv = document.getElementById('info-content');
+    const closeBtn = document.getElementById('info-close');
+    const closeFooterBtn = document.getElementById('info-close-btn');
+    
+    // Show loading indicator
+    contentDiv.innerHTML = '<div class="loading">Cargando...</div>';
+    
+    // Show the modal
+    modal.style.display = 'block';
+    
+    // Fetch the manual content
+    fetch('manual.html')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Insert the HTML content
+            contentDiv.innerHTML = html;
+            
+            // Add syntax highlighting if needed
+            if (typeof hljs !== 'undefined') {
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightBlock(block);
+                });
+            }
+        })
+        .catch(error => {
+            contentDiv.innerHTML = `<div class="error">Error al cargar el manual: ${error.message}</div>`;
+            console.error('Error fetching manual:', error);
+        });
+    
+    // Close modal when clicking the close button
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    };
+    
+    // Close modal when clicking the footer close button
+    closeFooterBtn.onclick = function() {
+        modal.style.display = 'none';
+    };
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
+
+// Function to clear all browser data
+function updateAll() {
+    // Reload the page to apply changes
+    if (!confirm("Todos los datos del programa se actualizarán y se recargará la página. Tus claves NO se borrarán.")) {
+        return false;
+    }
+    // Clear localStorage
+    // localStorage.clear();
+    
+    // Clear cookies
+    document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    
+    // Clear cache via service worker (if available)
+    if ('caches' in window) {
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.map(function(cacheName) {
+                    return caches.delete(cacheName);
+                })
+            );
+        });
+    }
+    
+    // Clear application cache (deprecated but still used in some browsers)
+    if (window.applicationCache) {
+        try {
+            window.applicationCache.abort();
+        } catch (e) {
+            console.log("Application cache could not be cleared");
+        }
+    }
+    
+    // Clear session storage
+    sessionStorage.clear();
+    
+    window.location.reload(true); // true forces reload from server, not cache
+}
+
 // -------------------------------------------------
 function doResize() {
     WW = window.innerWidth*0.9;
@@ -1006,17 +1122,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedTempoCPM = localStorage.getItem('tempoCPM');
     if (savedTempoCPM !== null) {
         tempoCPM = savedTempoCPM === 'true';
-        document.getElementById('tempoType').value = tempoCPM ? 'cpm' : 'bpm';
     }
+
+    
+
+    document.getElementById('tempoType').value = tempoCPM ? 'cpm' : 'bpm';
 
     // Initialize the canvas
     doResize();
     
     // Load from URL
     loadClaveFromURL();
-    const c = parseInt(document.getElementById('clave').value.split('.')[0]);
+    let c = parseInt(document.getElementById('clave').value.split('.')[0]);
+
+    if(isNaN(c)) {
+        document.getElementById('clave').value = "4.1";
+        c = 4;
+    }
+    
     // Define tempoValue desde la clave
-    document.getElementById('tempoValue').textContent = tempoCPM ? (tempo/c).toFixed(2):tempo;
+    document.getElementById('tempoValue').value = tempoCPM ? (tempo/c).toFixed(2):tempo;
+
+    // updateTempoFromInput();
     // Actualiza el tempo
     updateTempo();
 

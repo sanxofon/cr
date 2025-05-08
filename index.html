@@ -9,7 +9,7 @@
 	<meta name="author" content="Santiago Chávez Novaro">
 	<meta name="robots" content="index, follow">
 	<link rel="manifest" href="/cr/manifest.webmanifest">
-	<title>Claves Rítmicas v2</title>
+	<title>Claves Rítmicas v.2.52</title>
 	<meta name="theme-color" content="#eeeeee" />
 	<!-- Allow web app to be run in full-screen mode. -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -59,17 +59,18 @@
 		<div class="titulo">Claves Rítmicas</div>
 		<div>
 			<div class="inputLine1">
-				<input title="Ver Claves" class="escalar" type="checkbox" id="addClavesOperacion" name="addClavesOperacion" value="1" onchange="window.addClavesOperacion = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Ingrese Claves y Operaciones" type="text" id="clave" placeholder="CLAVES" onchange="go();"><button class="toggle round-right" onclick="go();">✔</button></div>
+				<input title="Ver Claves" class="escalar" type="checkbox" id="addClavesOperacion" name="addClavesOperacion" value="1" onchange="window.addClavesOperacion = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Ingrese Claves y Operaciones" type="text" id="clave" placeholder="CLAVES" onchange="go();"><button class="toggle round-right" onclick="go();">✔</button>
+			</div>
 			<div class="inputLine">
-				<input title="Ver Resultado" class="escalar" type="checkbox" id="addClaveResultado" name="addClaveResultado" value="1" onchange="window.addClaveResultado = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Clave resultado" type="text" id="claveResult" placeholder="RESULTADO" readonly="readonly"><input title="Clave resultado expandida" type="text" id="claveExpand" value="" readonly="readonly" style="display:none;"><button onclick="toggleInputVisibility();" title="Toggle view" class="toggle">_</button><button onclick="rotateClaveResult(-1);" title="Move Left" class="toggli">&lAarr;</button><button onclick="rotateClaveResult(1);" title="Move Right" class="toggln round-right">&rAarr;</button>
+				<input title="Ver Resultado" class="escalar" type="checkbox" id="addClaveResultado" name="addClaveResultado" value="1" onchange="window.addClaveResultado = this.checked; saveCheckboxState(this.id, this.checked); go();"><input title="Clave resultado" type="text" id="claveResult" placeholder="RESULTADO" readonly="readonly"><input title="Clave resultado expandida" type="text" id="claveExpand" value="" readonly="readonly" style="display:none;"><button onclick="toggleInputVisibility();" title="Toggle view" class="toggle smallt">_</button><button onclick="rotateClaveResult(-1);" title="Move Left" class="toggli smallt">&lAarr;</button><button onclick="rotateClaveResult(1);" title="Move Right" class="toggln smallt round-right">&rAarr;</button>
 			</div>
 			<div class="inputLine">
 				<button id="playButton" class="playButton" onclick="togglePlay();">▶</button>
 				<input title="Velocidad o Tempo" type="range" id="tempoSlider" min="1" max="3000" step="1" oninput="updateTempo()">
-				<span id="tempoValue"></span>
+				<input title="Valor del Tempo" type="number" id="tempoValue" min="1" max="3000" step="1" onchange="updateTempoFromInput()">
 				<select id="tempoType">
-					<option value="bpm">BPM</option>
 					<option value="cpm">CPM</option>
+					<option value="bpm">BPM</option>
 				</select>
 			</div>
 			<div class="opciones">
@@ -81,6 +82,7 @@
 				<label for="inptVerCuadros">Ver cuadros</label>
 			</div>
 			<div class="botones-memoria">
+				<button onclick="showInfo();" title="Cómo funcionan las Claves Rítmicas">❔</button>
 				<button onclick="shareClave();" title="Compartir Clave Actual">🔗</button>
 				<button onclick="saveClave();" title="Guardar Clave">💾</button>
 				<button onclick="openClaves();" title="Abrir Claves Guardadas">📂</button>
@@ -96,8 +98,8 @@
     </div>
 		
 	<div class="footer">
-		<a href="https://lengua.la">La Lengua</a>
-		
+		<a href="https://github.com/sanxofon/cr/" target="_blank">Claves Rítmicas v.2.52</a> - <a href="https://lengua.la">La Lengua</a>
+		<br>Esto no es un metrónomo, prueba con: <a href="https://lengua.la/mc/" target="_blank">mc</a> y <a href="https://lengua.la/metro/" target="_blank">metro</a>
 	</div>
 	<!-- Settings -->
 	<div id="settings-button-container">
@@ -108,6 +110,24 @@
 			</svg>
 		</button>
 	</div>
+	
+	<!-- Manual Info Modal -->
+	<div id="info-modal" class="settings-modal">
+		<div class="settings-modal-content">
+			<div class="settings-modal-header">
+				<h2>Claves Rítmicas - Manual</h2>
+				<span id="info-close" class="settings-close">&times;</span>
+			</div>
+			<div class="settings-modal-body" id="info-content">
+				<!-- Manual content will be loaded here -->
+				<div class="loading">Cargando...</div>
+			</div>
+			<div class="settings-modal-footer">
+				<button id="info-close-btn" class="settings-button settings-cancel-btn">Cerrar</button>
+			</div>
+		</div>
+	</div>
+	
 	<!-- SETTINGS Modal -->
 	<div id="settings-modal" class="settings-modal">
 		<div class="settings-modal-content">
@@ -185,7 +205,19 @@
 					</div>
 					<button id="settings-reset-colors" class="settings-button settings-reset-btn">Volver a Colores por Defecto</button>
 				</div>
+
+				<!-- Clear All -->
+				<div class="settings-section">
+					<h3>Vaciar memoria y caché</h3>
+					<div class="settings-control">
+						<label for="settings-sound-delay">No haga esto si no sabe por qué lo hace</label>
+						<button id="updateAll" onclick="updateAll()">Actualizar APP</button>
+						<p class="settings-help">Todos los datos de la app serán actualizados a la última versión. Las claves del usuario no se modifican pero por seguridad te recomendamos exportar tus claves antes de continuar.</p>
+					</div>
+				</div>
+
 			</div>
+
 			<div class="settings-modal-footer">
 				<button id="settings-save" class="settings-button settings-save-btn">Guardar Configuración</button>
 				<button id="settings-cancel" class="settings-button settings-cancel-btn">Cancelar</button>

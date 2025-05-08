@@ -416,6 +416,11 @@ function loadClave(index) {
     if (index >= 0 && index < savedClaves.length) {
         document.getElementById('clave').value = savedClaves[index].clave || '';
         document.getElementById('claveResult').value = savedClaves[index].result || '';
+        tempoCPM = true;
+        document.getElementById('tempoType').value = 'cpm';
+        document.getElementById('tempoValue').value = 30;
+        updateTempoFromInput();
+
         go(); // Assuming this function updates the visualization
     }
 }
