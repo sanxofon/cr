@@ -146,7 +146,7 @@ self.addEventListener('fetch', function(event) {
     en el paso de instalación, crearíamos dos cachés, 'pages-cache-v1' y 
     'blog-posts-cache-v1', y en el paso de activación deberíamos borrar la 
     'my-site-cache-v1' antigua.
-
+s
   El siguiente código permitiría hacer esto generando un ciclo por todas las 
   cachés del service worker y eliminando cualquier caché que no esté definida 
   en la lista blanca de la caché.
