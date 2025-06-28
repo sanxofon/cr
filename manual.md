@@ -307,9 +307,9 @@ Ejercicio: **5.212 / 7.21112**
 
 Nota que esta operación de **superposición** es más complicada que la **concatenación**, así que hemos creado un código JavaScript (claves-ritmicas.class.js) para ayudarnos a hacer estos cálculos rápido y fiablemente.
 
-Puedes acceder a la **[Calculadora Rítmica](https://lengua.la/cr)** en línea en la dirección:
+Puedes acceder a la **[Calculadora Rítmica](https://sanxofon.github.io/cr)** en línea en la dirección:
 
-**[https://lengua.la/cr](https://lengua.la/cr)**
+**[https://sanxofon.github.io/cr](https://sanxofon.github.io/cr)**
 
 Ahí se pueden hacer operaciones tan complicadas como quieras, y podemos aplicar varias operaciones en una sola expresión usando los paréntesis para ordenas las operaciones de forma clara.
 

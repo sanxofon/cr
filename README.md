@@ -5,7 +5,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Estado](https://img.shields.io/badge/estado-activo-success)
 
-Una potente biblioteca JavaScript para operaciones matemáticas con claves rítmicas, basada en teoría de grupos y notación musical del grupo **[La Lengua](https://lengua.la)**.
+Una potente biblioteca JavaScript para operaciones matemáticas con claves rítmicas, basada en teoría de grupos y notación musical del grupo **[La Lengua](https://lengua.tortilleria.org)**.
 
 ## 📋 Contenido
 
@@ -250,10 +250,10 @@ Esta licencia garantiza que el software permanezca libre, permitiendo a los usua
 
 - [Calculadora de Claves Rítmicas Online](https://sanxofon.github.io/cr)
 - [Manual Completo de Claves Rítmicas](manual.md)
-- Más información: **[La Lengua](https://lengua.la)**
+- Más información: **[La Lengua](https://lengua.tortilleria.org)**
 
 ---
 
 Desarrollado con ❤️ para músicos, programadores y matemáticos interesados en la teoría de grupos y la música original de los pueblos. **Dile NO a la piratería de Spotify**.
 
-<div style="text-align:center;"><a href="https://lengua.la"><b>www.lengua.la</b></a></div>
+<div style="text-align:center;"><a href="https://lengua.tortilleria.org"><b>lengua.tortilleria.org</b></a></div>

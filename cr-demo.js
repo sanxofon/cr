@@ -1,6 +1,6 @@
-// Claves Rítmicas
-// By: La Lengua
-// www.lengua.la
+// Claves Rítmicas - Calculadora Rítmica
+// By: Sanxofon / La Lengua
+// https://github.com/sanxofon
 
 // Canvas sobre el que vamos a dibujar
 const canvas = document.getElementById('circle');

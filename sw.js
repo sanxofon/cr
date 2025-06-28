@@ -5,7 +5,7 @@
   El método event.waitUntil() toma una promesa y la usa para saber 
     cuánto tarda la instalación y si se realizó correctamente.
 */
-var CACHE_NAME = 'claves-ritmicas-v.2.52';
+var CACHE_NAME = 'claves-ritmicas-v.2.53';
 var urlsToCache = [
   './',
   'index.html',
@@ -153,7 +153,7 @@ self.addEventListener('fetch', function(event) {
 */
 self.addEventListener('activate', function(event) {
 
-  var cacheWhitelist = ['claves-ritmicas-v.2.52'];
+  var cacheWhitelist = ['claves-ritmicas-v.2.53'];
 
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
