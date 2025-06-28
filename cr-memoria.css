@@ -24,11 +24,19 @@
 }
 
 .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    position: fixed;
+    /* top: 10px;
+    right: 10px; */
     font-size: 24px;
     cursor: pointer;
+    border: 1px solid #000;
+    border-radius: 25%;
+    width: 1em;
+    text-align: center;
+    background-color: #eee;
+}
+.close-button:hover {
+    background-color: #ccf;
 }
 
 .claves-table {
@@ -94,7 +102,13 @@ body.invert .botones-memoria {
 .botones-memoria button:active {
     scale: 0.9;
 }
-
+.rojito {
+    background-color: #FFCCCC;
+}
+.clearClaves {
+    margin: 30px;
+    background-color: #FF9999;
+}
 
 /* SHARE & QRCODE */
 /* Modal Styles */

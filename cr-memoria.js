@@ -319,6 +319,7 @@ function openClaves() {
         
         // Delete button
         let deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('rojito');
         deleteBtn.textContent = '🗑';
         deleteBtn.onclick = function() {
             if (confirm('¿Está seguro de eliminar esta clave?')) {
@@ -338,6 +339,15 @@ function openClaves() {
     // Assemble modal
     modalContent.appendChild(closeBtn);
     modalContent.appendChild(table);
+
+    // Añadir botón de "BORRAR TODOS"
+    let clearClavesBtn = document.createElement('button');
+    clearClavesBtn.classList.add('clearClaves')
+    clearClavesBtn.title = 'Vaciar Memoria de Claves';
+    clearClavesBtn.textContent = 'Vaciar Memoria de Claves: 🧻';
+    clearClavesBtn.onclick = clearClaves;
+    modalContent.appendChild(clearClavesBtn)
+
     modal.appendChild(modalContent);
     
     // Add modal to body
