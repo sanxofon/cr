@@ -2,6 +2,9 @@
 // By: Sanxofon / La Lengua
 // https://github.com/sanxofon
 
+// Capturamos los argumentos del URL si existen.
+const urlParams = new URLSearchParams(window.location.search);
+
 // Canvas sobre el que vamos a dibujar
 const canvas = document.getElementById('circle');
 // Contexto del canvas
@@ -897,15 +900,28 @@ function toggleLightDark() {
     go();
 }
 
+function loadTempoFromURL() {
+    const cpmParam = !(parseInt(urlParams.get('b')) === 1);
+    let tempoParam = urlParams.get('t');
+    if (tempoParam) {
+        tempoParam = parseInt(tempoParam.replace(/[^0-9\.]/g, ''));
+    }
+    if (tempoParam) return [tempoParam, cpmParam];
+    return false;
+}
+
 // Function to load a clave from URL parameter
 // El signo de + debe ser cambiado por: %2B
 function loadClaveFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const claveParam = urlParams.get('c');
-    
+    let claveParam = urlParams.get('c');
+    if (claveParam) {
+        claveParam = claveParam.replace(/[^a-zA-Z0-9()|+\.\*\/]/g, '');
+    }
+    let isurl = false;
     if (claveParam) {
         document.getElementById('clave').value = claveParam;
         saveClaveToLocalStorage(claveParam);
+        isurl = true;
         if (verbose)console.log('Clave cargada desde URL:', claveParam);
     } else {
         // Load last clave from localStorage
@@ -916,6 +932,7 @@ function loadClaveFromURL() {
     setTimeout(function() {
         go(); // Process the loaded clave with a slight delay
     }, 200);
+    return isurl;
 }
 
 // -------------------------------------------------
@@ -1118,7 +1135,6 @@ document.addEventListener('DOMContentLoaded', function() {
         tempo = parseInt(savedTempo);
         document.getElementById('tempoSlider').value = tempo;
     }
-    
     const savedTempoCPM = localStorage.getItem('tempoCPM');
     if (savedTempoCPM !== null) {
         tempoCPM = savedTempoCPM === 'true';
@@ -1132,12 +1148,31 @@ document.addEventListener('DOMContentLoaded', function() {
     doResize();
     
     // Load from URL
-    loadClaveFromURL();
+    const isurl = loadClaveFromURL();
+    console.log("isurl",isurl);
     let c = parseInt(document.getElementById('clave').value.split('.')[0]);
 
     if(isNaN(c)) {
         document.getElementById('clave').value = "4.1";
         c = 4;
+    }
+    
+    if(isurl) {
+        const urlTempo = loadTempoFromURL();
+        console.log('urlTempo',urlTempo);
+        if(urlTempo) {
+            tempoCPM = urlTempo[1];
+            if(tempoCPM) {
+                tempo = urlTempo[0]*c;
+            } else {
+                tempo = urlTempo[0];
+            }
+            document.getElementById('tempoSlider').value = tempo;
+        } else {
+            // Default tempo for URL clave
+            tempoCPM = true;
+            tempo = 30*c;
+        }
     }
     
     // Define tempoValue desde la clave
