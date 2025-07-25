@@ -1,6 +1,7 @@
 // Claves Rítmicas - Calculadora Rítmica
 // By: Sanxofon / La Lengua
-// https://github.com/sanxofon
+// https://github.com/sanxofon/cr
+// https://sanxofon.github.io/cr
 
 // Capturamos los argumentos del URL si existen.
 const urlParams = new URLSearchParams(window.location.search);
@@ -476,6 +477,27 @@ if (canvas.getContext){
         // 
         // drawLine(i,f,c='#FFFFFF',2);
     }
+
+    function leerCeros(c) {
+        const a = c.split('.');
+        let change = false;
+        for (let i = 1; i < a.length; i++) {
+            a[i];
+            const m = a[i].match(/^(0+)(.*)$/);
+            if (m) {
+                const l = m[1];
+                const r = m[2];
+                const n = l.length;
+                a[i] = '['+n+']'+r;
+                change = true;
+            }
+        }
+        if(change) {
+            return a.join('.')
+        } else {
+            return c;
+        }
+    }
     
     function leerClave(clave,resonly=false) {
         // Check if clave is empty and return empty array if so
@@ -484,6 +506,9 @@ if (canvas.getContext){
             document.getElementById('claveResult').value = '';
             return [];
         }
+
+        // Quitamos y contamos los ceros 5.023 => 5.[1]23
+        clave = leerCeros(clave);
         
         const full = cr.fullParse(clave,true,true);
         if(verbose)console.log("full:",full);
@@ -915,7 +940,7 @@ function loadTempoFromURL() {
 function loadClaveFromURL() {
     let claveParam = urlParams.get('c');
     if (claveParam) {
-        claveParam = claveParam.replace(/[^a-zA-Z0-9()|+\.\*\/]/g, '');
+        claveParam = claveParam.replace(/[^a-zA-Z0-9()|+\.\*\/\[\]]/g, '');
     }
     let isurl = false;
     if (claveParam) {
@@ -1149,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load from URL
     const isurl = loadClaveFromURL();
-    console.log("isurl",isurl);
+    if(verbose)console.log("isurl",isurl);
     let c = parseInt(document.getElementById('clave').value.split('.')[0]);
 
     if(isNaN(c)) {
@@ -1159,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if(isurl) {
         const urlTempo = loadTempoFromURL();
-        console.log('urlTempo',urlTempo);
+        if(verbose)console.log('urlTempo',urlTempo);
         if(urlTempo) {
             tempoCPM = urlTempo[1];
             if(tempoCPM) {
