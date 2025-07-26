@@ -247,6 +247,11 @@ function openClaves() {
     // Create modal container
     let modal = document.createElement('div');
     modal.className = 'modal';
+    modal.onclick = function(evt) {
+        if(evt.target==modal) {
+            document.body.removeChild(modal);
+        }
+    };
     
     // Create modal content
     let modalContent = document.createElement('div');
@@ -269,7 +274,7 @@ function openClaves() {
     let headerRow = document.createElement('tr');
     
     // Add headers including the new Title column
-    ['Título', 'Clave', 'Resultado', 'Fecha', 'Acciones'].forEach(text => {
+    ['Título', 'Clave', 'Resultado', 'Fecha', 'Eliminar'].forEach(text => {
         let th = document.createElement('th');
         th.textContent = text;
         headerRow.appendChild(th);
@@ -286,8 +291,16 @@ function openClaves() {
         let row = document.createElement('tr');
         
         // Title cell
+        // and button
+        let loadBtn = document.createElement('a');
+        loadBtn.textContent = clave.title || 'Sin título';
+        loadBtn.href = '#';
+        loadBtn.onclick = function() {
+            loadClave(index);
+            document.body.removeChild(modal);
+        };
         let titleCell = document.createElement('td');
-        titleCell.textContent = clave.title || 'Sin título';
+        titleCell.appendChild(loadBtn);
         row.appendChild(titleCell);
         
         // Clave cell
@@ -309,13 +322,13 @@ function openClaves() {
         let actionsCell = document.createElement('td');
         
         // Load button
-        let loadBtn = document.createElement('button');
-        loadBtn.textContent = '🖋';
-        loadBtn.onclick = function() {
-            loadClave(index);
-            document.body.removeChild(modal);
-        };
-        actionsCell.appendChild(loadBtn);
+        // let loadBtn = document.createElement('button');
+        // loadBtn.textContent = '🖋';
+        // loadBtn.onclick = function() {
+        //     loadClave(index);
+        //     document.body.removeChild(modal);
+        // };
+        // actionsCell.appendChild(loadBtn);
         
         // Delete button
         let deleteBtn = document.createElement('button');

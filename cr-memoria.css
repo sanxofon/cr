@@ -34,6 +34,8 @@
     width: 1em;
     text-align: center;
     background-color: #eee;
+    margin-left: -15px;
+    margin-top: -15px;
 }
 .close-button:hover {
     background-color: #ccf;
@@ -205,6 +207,22 @@ body.invert .botones-memoria {
     text-align: center;
     margin-bottom: 20px;
     font-size: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: darkred;
+}
+a:hover {
+    text-decoration: underline;
+    color: #b50000
+}
+a:visited {
+    color: #440000
+}
+a:active {
+    text-decoration: underline;
+    color: #c59100
 }
 
 /* Responsive adjustments */
