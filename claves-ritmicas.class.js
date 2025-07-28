@@ -148,11 +148,104 @@ class cr {
 
 		return outputQueue;
 	}
+	// Convierte una expresión postfix a infix
+	static postfixToInfix(postfix) {
+		const operators = {
+			'*': { precedence: 4 },
+			'/': { precedence: 3 },
+			'|': { precedence: 3 },
+			'+': { precedence: 2 }
+		};
+
+		const stack = [];
+		const tokens = Array.isArray(postfix) ? postfix : String(postfix).trim().split(/\s+/).filter(t => t);
+
+		for (const token of tokens) {
+			if (token in operators) {
+				const opInfo = operators[token];
+				const op1 = stack.pop();
+				const op2 = stack.pop();
+
+				if (!op1 || !op2) {
+					console.error('Invalid postfix expression:', tokens);
+					return 'error';
+				}
+
+				let op1_expr = op1.expr;
+				if (op1.precedence <= opInfo.precedence) {
+					op1_expr = `(${op1_expr})`;
+				}
+
+				let op2_expr = op2.expr;
+				if (op2.precedence < opInfo.precedence) {
+					op2_expr = `(${op2_expr})`;
+				}
+
+				const new_expr = `${op2_expr}${token}${op1_expr}`;
+				stack.push({ expr: new_expr, precedence: opInfo.precedence });
+			} else {
+				stack.push({ expr: token, precedence: Infinity });
+			}
+		}
+
+		if (stack.length !== 1) {
+			console.error('Invalid postfix expression:', tokens);
+			return 'error';
+		}
+
+		return stack[0].expr;
+	}
+
+	static createInputs(postfix,elid='clavespostfix') {
+		// NADA DE ESTO DEBERÍA DE IR AQUÍ
+		const clavespostfix = document.getElementById(elid);
+		clavespostfix.innerHTML='';
+
+		for (let i = 0; i < postfix.length; i++) {
+			const element = document.createElement('input');
+			element.value=postfix[i];
+			if(postfix[i].indexOf('.') === -1) {
+				if(verbose)console.log('hidden created',postfix[i]);
+				element.setAttribute('type','hidden');
+				clavespostfix.appendChild(element);
+			} else {
+				element.setAttribute('type','text');
+				element.setAttribute('readonly','readonly');
+				element.classList.add('peque');
+				clavespostfix.appendChild(element);
+
+                const butom = document.createElement('button');
+				butom.classList.add('smallt','mute-button');
+				butom.innerText = "🔉";
+				if(postfix[i][0]=='-'){
+					butom.innerText = "🔇";
+				}
+				clavespostfix.appendChild(butom);
+
+                const butol = document.createElement('button');
+                butol.dataset.direction = '-1';
+				butol.classList.add('toggli', 'smallt', 'rotate-button');
+				butol.innerText = "⇚";
+				clavespostfix.appendChild(butol);
+
+				const butor = document.createElement('button');
+                butor.dataset.direction = '1';
+				butor.classList.add('toggln', 'smallt', 'round-right', 'rotate-button');
+				butor.innerText = "⇛";
+				clavespostfix.appendChild(butor);
+			}
+		}
+	}
+
 	// Resuelve una expresión en notación postfix
 	static solvePostfix(postfix) {
 		var resultStack = [];
 		postfix = postfix.trim().split(' ');
 		if(verbose)console.log('postfix:',postfix);
+
+		// Aquí tenemos una lista con todas las claves de la fórmula actual y la usamos para crear rotaciones de cada clave
+		this.createInputs(postfix);
+
 		for(var i = 0; i < postfix.length; i++) {
 			if(postfix[i] === '') {
 				continue;
@@ -197,7 +290,7 @@ class cr {
 	// Parsea una expresión matemática y la procesa
 	static fullParse(expression, reducir=false, asarray=false) {
 		var infix = this.filtrar(expression); // filtrar
-		
+		if(verbose)console.log('infix',infix);
 		const postfix = this.infixToPostfix(infix);
 		
 		// Extract all claves from the postfix expression

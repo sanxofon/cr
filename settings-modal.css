@@ -4,6 +4,7 @@
     top: 0;
     right: 0;
     display: inline-block;
+    z-index: 20;
 }
 .settings-button {
     background-color: transparent;
@@ -16,6 +17,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.mute-button {
+    border-bottom: 1px solid #333;
+    border-top: 1px solid #333;
+    margin: 0 !important;
+    width: 30px;
 }
 
 .settings-button:hover {

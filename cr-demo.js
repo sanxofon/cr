@@ -59,7 +59,8 @@ var soundsPlayed = {}; // To track which sounds have been played
 var currentHighlightedVertex = null; // track the currently highlighted vertex
 window.tolerance = 7; // Increased tolerance for better detection
 window.soundsPlayedFlagDelay = 200; // Delay before resetting the flag
-
+window.esOperation = '';
+window.full = {};
 // -------------------------------------------------
 // MEMORIA LOCALSTORAGE ----------------------------
 // Save clave to localStorage when it changes
@@ -368,6 +369,7 @@ if (canvas.getContext){
     
     function redraw() {
         ctx.clearRect(0, 0, WW, HH);
+        document.getElementById('clavespostfix').innerHTML='';
         draw();
     }
     function drawCircle(i,r,b=3,c='#aaaaaa'){
@@ -511,12 +513,15 @@ if (canvas.getContext){
         clave = leerCeros(clave);
         
         const full = cr.fullParse(clave,true,true);
+        window.full = full;
         if(verbose)console.log("full:",full);
         if(full.operation=='+') {
             if(addClavesOperacion) {
                 document.getElementById('addClavesOperacion').click();
             }
         }
+        window.esOperation = full.operation;
+
         const r = full.legacy;
         if(verbose)console.log("r:",r);
         const cr_obj = [];
@@ -643,12 +648,21 @@ if (canvas.getContext){
         }
         
         // SQUARES VISUALIZATION -  Add at the end of the function:
-        const claveres = leerClave(document.getElementById('claveResult').value, true);
-        createSquareVisualization(claveres);
-        // createSquareVisualization(clave);
-        
-        if(verbose)console.log("Vertex points:", vertexPoints.length);
-        
+        // const claveres = leerClave(document.getElementById('claveResult').value, true);
+        let claveres = document.getElementById('claveExpand').value.split('.');
+        if(claveres[1] !== undefined) {
+            claveres[1] = claveres[1].split('_');
+            claveres[0] = parseInt(claveres[0]);
+            for (let i = 0; i < claveres[1].length; i++) {
+                claveres[1][i] = parseInt(claveres[1][i]);
+                
+            }
+            if(verbose)console.log('claveres',claveres);
+            
+            createSquareVisualization([claveres,claveres]); // Pinta la clave resultado en lo cuadros
+            
+            if(verbose)console.log("Vertex points:", vertexPoints.length);
+        }
     }
     
     // SQUARES VISUALIZATION - DRAW SQUARES VISUALIZATION
@@ -733,7 +747,8 @@ if (canvas.getContext){
         if (!clave || !clave.length) return;
         
         // For superposition (/) or mixed operations, only show result
-        if (clave.length > 1 && cr.fullParse(document.getElementById('clave').value).operation !== '+') {
+        // if (clave.length > 1 && cr.fullParse(document.getElementById('clave').value).operation !== '+') {
+        if (clave.length > 1 && window.esOperation !== '+') {
             clave = [clave[0]];
         }
         
@@ -1003,6 +1018,60 @@ function rotateClaveResult(rotationAmount) {
     document.getElementById('clave').value = contraida;
     go();
 }
+function parseClave(c) {
+    let [l,x] = (""+c).split('.');
+    l = parseInt(l); // longitud
+    x = x.replace('[', '');
+    x = x.split(']');
+    let z = 0; // ceros
+    let r = x[0];
+    if(x.length>1) {
+        z = parseInt(x[0]);
+        r = x[1];
+    }
+    // longitud, golpes, ceros
+    return [l, r, z];
+}
+function joinClave(l,r,z) {
+    longitud+'.'+(ceros>0 ? '['+ceros+']':'')+golpex;
+}
+function updateClaveString(elid='clavespostfix') {
+    const c = document.getElementById(elid);
+    const a = [];
+	for (let i = 0; i < c.children.length; i++) {
+        const e = c.children[i];
+
+        if(e.tagName === 'INPUT') {
+            a.push(e.value);
+        }
+        
+    }
+    if(verbose)console.log("updateClaveString",a);
+    if(a.length>0) {
+        document.getElementById('clave').value = cr.postfixToInfix(a);
+    }
+    go();
+}
+function rotateClave(clave,rotationAmount) {
+    if (clave==undefined || isNaN(rotationAmount) || rotationAmount==0) {
+        return;
+    }
+    if (verbose)console.log("rotateClave", clave, rotationAmount);
+    let [longitud,golpes,ceros] = parseClave(clave); 
+    if(verbose)console.log('longitud:',longitud);
+    if(verbose)console.log('golpes:',golpes);
+    if(verbose)console.log('ceros:',ceros);
+    let golpex = cr.base62expand(golpes);
+    let claveExpand = longitud+'.'+(ceros>0 ? '['+ceros+']':'')+golpex;
+    const binaria = cr.clave2binary(claveExpand).split('.')[1];
+    const rotatedBinary = rotateArray(binaria, rotationAmount);
+    let claveRes = cr.binary2clave(rotatedBinary);
+    if(claveRes[1]>0)claveRes = longitud + '.' + '['+claveRes[1]+']' + claveRes[0].join('_');
+    else claveRes = longitud + '.' + claveRes[0].join('_');
+    const contraida = cr.base62contract(claveRes);
+    if(verbose)console.log('contraida:',contraida);
+    return contraida;
+}
 
 
 // Function to show information modal with manual content
@@ -1127,6 +1196,37 @@ window.onresize = function(event) {
 document.getElementById('tempoType').addEventListener('change', function() {
     tempoCPM = document.getElementById('tempoType').value == 'cpm' ? true : false;
     updateTempo();
+});
+
+document.getElementById('clavespostfix').addEventListener('click', function(event) {
+    const target = event.target;
+    if (target.classList.contains('rotate-button')) {
+        const direction = parseInt(target.dataset.direction, 10);
+        let inputElement;
+
+        if (direction === -1) {
+            inputElement = target.previousElementSibling.previousElementSibling;
+        } else {
+            inputElement = target.previousElementSibling.previousElementSibling.previousElementSibling;
+        }
+
+        if (inputElement && inputElement.tagName === 'INPUT') {
+            inputElement.value = rotateClave(inputElement.value, direction);
+            updateClaveString();
+        }
+    } else if (target.classList.contains('mute-button')) {
+        let inputElement = target.previousElementSibling;
+        if (inputElement && inputElement.tagName === 'INPUT') {
+            if(inputElement.value[0]=='-') {
+                target.innerText = "🔉";
+                inputElement.value=inputElement.value.replace(/^-+/g, '');
+            }else{
+                target.innerText = "🔇";
+                inputElement.value='-'+inputElement.value;
+            }
+            updateClaveString();
+        }
+    }
 });
 
 // Initialize when document is fully loaded

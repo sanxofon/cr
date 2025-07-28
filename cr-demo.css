@@ -22,6 +22,8 @@ body{
 .colder {
     max-width: 100%;
     min-width: 50%;
+    z-index: 10;
+    position: relative;
 }
 .titulo {
     font-size: 2em;
@@ -361,13 +363,6 @@ input[type=number] {
     height: 200px;
     margin: 0 auto;
 }
-
-#claveResult {
-    background-color: #ddd;
-    color: #333;
-    font-size: 1em;
-    height: 24px;
-}
 .smallt {
     height: 28px;
     font-size: 0.9em;
@@ -413,6 +408,13 @@ input[type=number] {
 }
 .element-card h3 {
     margin-top: 0;
+}
+
+input.peque {
+    background-color: #eee!important;
+    color: #333!important;
+    font-size: 1em;
+    height: 24px;
 }
 @media (max-width: 600px) {
     .manual-content {
