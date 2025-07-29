@@ -195,7 +195,6 @@ class cr {
 
 		return stack[0].expr;
 	}
-
 	static createInputs(postfix,elid='clavespostfix') {
 		// NADA DE ESTO DEBERÍA DE IR AQUÍ
 		const clavespostfix = document.getElementById(elid);
@@ -287,6 +286,7 @@ class cr {
 	static compareInt(a, b) {
 		return a-b;
 	}
+	
 	// Parsea una expresión matemática y la procesa
 	static fullParse(expression, reducir=false, asarray=false) {
 		var infix = this.filtrar(expression); // filtrar
@@ -321,7 +321,7 @@ class cr {
 		const sortedClaves = [...expandedClaves].sort(this.compareClaves);
 		
 		// Calculate the result
-		const result = this.solvePostfix(postfix);
+		const result = this.solvePostfix(postfix, true);
 		
 		const completedResult = this.completarClave(result, asarray, reducir);
 		

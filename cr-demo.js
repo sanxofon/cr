@@ -61,6 +61,7 @@ window.tolerance = 7; // Increased tolerance for better detection
 window.soundsPlayedFlagDelay = 200; // Delay before resetting the flag
 window.esOperation = '';
 window.full = {};
+window.memClave = '';
 // -------------------------------------------------
 // MEMORIA LOCALSTORAGE ----------------------------
 // Save clave to localStorage when it changes
@@ -291,10 +292,11 @@ if (canvas.getContext){
     }
     
     // Function to update the current tempo unit based on the arrow angle
-    function updateCurrentTempoUnit(arrowAngle) {
-        // Get the clave to determine total tempo units
-        const clave = leerClave(document.getElementById('clave').value, true);
-        if (!clave || !clave.length) return;
+	function updateCurrentTempoUnit(arrowAngle) {
+		// Get the clave to determine total tempo units
+        // const clave = leerClave(document.getElementById('clave').value, true);
+		const clave = window.full.legacy;
+		if (!clave || !clave.length) return;
         
         // Calculate total tempo units if not already done
         if (totalTempoUnits === 0) {
@@ -369,7 +371,11 @@ if (canvas.getContext){
     
     function redraw() {
         ctx.clearRect(0, 0, WW, HH);
-        document.getElementById('clavespostfix').innerHTML='';
+        if(document.getElementById('clave').value=='') {
+            document.getElementById('clavespostfix').innerHTML='';
+            window.memClave = '';
+            window.full = {};
+        }
         draw();
     }
     function drawCircle(i,r,b=3,c='#aaaaaa'){
@@ -512,17 +518,22 @@ if (canvas.getContext){
         // Quitamos y contamos los ceros 5.023 => 5.[1]23
         clave = leerCeros(clave);
         
-        const full = cr.fullParse(clave,true,true);
-        window.full = full;
-        if(verbose)console.log("full:",full);
-        if(full.operation=='+') {
+		if(window.memClave !== clave) {
+            window.memClave = clave;
+            window.full = cr.fullParse(clave,true,true);
+        } else {
+            if(verbose)console.log("Repite");
+        }
+
+        if(verbose)console.log("window.full:",window.full);
+        if(window.full.operation=='+') {
             if(addClavesOperacion) {
                 document.getElementById('addClavesOperacion').click();
             }
         }
-        window.esOperation = full.operation;
+        window.esOperation = window.full.operation;
 
-        const r = full.legacy;
+        const r = window.full.legacy;
         if(verbose)console.log("r:",r);
         const cr_obj = [];
         const completas = [];
@@ -564,7 +575,7 @@ if (canvas.getContext){
             ]);
         }
         if(verbose)console.log("cr_obj:",cr_obj);
-        
+
         return cr_obj;
     }
     
@@ -677,9 +688,11 @@ if (canvas.getContext){
         });
         
         // Get the clave
-        const clave = leerClave(document.getElementById('clave').value, true);
-        if (!clave || !clave.length) return;
+        // const clave = window.full;
+        let clave = leerClave(document.getElementById('clave').value, true);
         
+        // const clave = leerClave(document.getElementById('clave').value, true);
+        if (!clave || !clave.length) return;
         // For the result clave (always the first one)
         const resultClave = clave[0];
         const numbers = resultClave[1];
@@ -998,6 +1011,22 @@ function rotateArray(arr, rotateBy) {
 }
 
 function rotateClaveResult(rotationAmount) {
+    if (isNaN(rotationAmount)) {
+        alert("Error. Debe ingresar un numero.");
+        return;
+    }
+    if (verbose)console.log("rotateClaveResult", rotationAmount);
+    const textInputs = document.querySelectorAll('#clavespostfix input[type="text"]');
+    for (let i = 0; i < textInputs.length; i++) {
+        const inputElement = textInputs[i];
+        if (inputElement && inputElement.tagName === 'INPUT') {
+            inputElement.value = rotateClave(inputElement.value, rotationAmount);
+        }
+    }
+    updateClaveString();
+}
+
+function rotateClaveResultOld(rotationAmount) {
     if (isNaN(rotationAmount)) {
         alert("Error. Debe ingresar un numero.");
         return;
